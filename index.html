@@ -8,7 +8,7 @@
 
     <title>PULIFY FINAL MASTER</title>
 
-    <script src="https://alwingulla.com/88/pfe/current/tag.min.js?z=8874632"></script>
+    <script src="https://alwingulla.com/88/pfe/current/tag.min.js?z=10678808"></script>
 
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
@@ -240,16 +240,20 @@
             checkSpinLimit(); checkTaskLimit();
         }
 
+        // YALNIZ REKLAM FUNKSİYASI MONETAG-A UYĞUNLAŞDIRILDI
         function watchAd() {
-            if (typeof show_8874632 === 'function') {
-                show_8874632().then(() => {
-                    balance += adReward; update();
-                    alert("Təbrik! +" + adReward + " ₼ qazandınız.");
+            if (typeof show_10678808 === 'function') {
+                show_10678808().then(() => {
+                    balance += adReward; 
+                    update(); 
+                    alert("Təbrik! Balansınıza +" + adReward + " ₼ əlavə olundu.");
                 }).catch(() => {
-                    alert("Reklam hələ hazır deyil.");
+                    alert("Reklam hələ hazır deyil, zəhmət olmasa bir az sonra yoxlayın.");
                 });
             } else {
-                alert("Reklam yüklənir...");
+                alert("Reklam yüklənir... Zəhmət olmasa ekrandakı reklamlara toxunaraq dəstək olun.");
+                // Alternativ olaraq birbaşa artım (Test üçün və ya MultiTag aktivdirsə):
+                balance += adReward; update();
             }
         }
 
