@@ -27,11 +27,10 @@
         .nav-link i { font-size: 26px; }
         .nav-link.active { color: white; font-weight: bold; transform: translateY(-3px); }
 
+        .sub-layer { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg); z-index: 2000; display: none; flex-direction: column; padding: 20px; box-sizing: border-box; overflow-y: auto; }
         .method-tabs { display: flex; gap: 10px; margin-bottom: 20px; }
         .method-btn { flex: 1; padding: 12px; border-radius: 12px; border: 1px solid #ddd; background: white; cursor: pointer; font-weight: bold; }
         .method-btn.active { background: var(--green); color: white; border-color: var(--green); }
-
-        .sub-layer { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg); z-index: 2000; display: none; flex-direction: column; padding: 20px; box-sizing: border-box; overflow-y: auto; }
     </style>
 </head>
 <body>
@@ -44,7 +43,7 @@
     <div id="home-p" class="page active-page">
         <div class="card" style="background: var(--green); color: white; text-align: left;">
             <h3 id="ann-title" style="margin:0 0 10px 0;">Mühüm Bildiriş 📢</h3>
-            <p id="ann-body" style="font-size: 13px; margin:0;">Yüklənir...</p>
+            <p id="ann-body" style="font-size: 13px; margin:0;">Reklam izləyərək dəstək olun!</p>
         </div>
         
         <div class="card">
@@ -58,17 +57,21 @@
         </div>
 
         <div class="card" style="text-align: left; border: 1px solid #eee;">
-            <h4 style="margin:0 0 10px 0; border-left: 4px solid var(--green); padding-left: 10px;">Gündəlik Tapşırıq (72 Saat)</h4>
-            <a id="task-btn" href="https://referral.sandiq.app/ref/TREND030" target="_blank" onclick="completeTask(event)" class="btn-main" style="background: var(--green); text-decoration: none;">Görevı tamamla - 0.05 ₼</a>
+            <h4 style="margin:0 0 10px 0; border-left: 4px solid var(--green); padding-left: 10px;">Günün görəvi tamamla</h4>
+            <a id="task-btn" href="https://referral.sandiq.app/ref/TREND030" target="_blank" onclick="completeTask(event)" class="btn-main" style="background: var(--green); text-decoration: none;">Görəvi tamamla - <span id="task-reward-display">0.05</span> ₼</a>
             <div id="task-timer-msg" style="display:none; color: red; font-weight: bold; margin-top: 10px; font-size: 11px; text-align: center;">Növbəti haqqınız: <span id="task-time-left">00:00:00</span></div>
         </div>
     </div>
 
     <div id="click-p" class="page">
-        <div class="card" style="background: var(--green); color: white;">
-            <h3>Coin Topla 👆</h3>
+        <div class="card" style="background: var(--green); color: white; margin-bottom: 10px;">
+            <div style="font-size: 13px; opacity: 0.9; margin-bottom: 5px;">
+                🗓 Günlük limit: 1000 toxunuş<br>
+                💰 Qazanc: 1000 Coin = 0.10₼<br>
+                <small>(Sürətli toxun, balansını anında artır!)</small>
+            </div>
             <div id="coin-val" style="font-size: 45px; font-weight: 900;">0</div>
-            <p>Gündəlik Limit: <span id="click-limit">1000</span> / 1000</p>
+            <p style="margin:0;">Limit: <span id="click-limit">1000</span> / 1000</p>
         </div>
         <div onclick="doClick()" id="main-diamond" style="width: 210px; height: 210px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 80px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); cursor: pointer; transition: 0.1s; user-select: none;">💎</div>
     </div>
@@ -80,7 +83,7 @@
         </div>
         <div class="card">
             <button id="spin-btn" class="btn-main" style="background: var(--green);" onclick="runSpin()">Çarxı Çevir</button>
-            <p id="spin-msg" style="margin-top: 15px; font-size: 13px; font-weight: bold;">Gündə 1 dəfə daxil ol və 0.03 ₼ qazan! 🎁</p>
+            <p id="spin-msg" style="margin-top: 15px; font-size: 13px; font-weight: bold;">Gündə 1 dəfə daxil ol və qazan! 🎁</p>
             <div id="spin-timer" style="display:none; color: red; font-weight: bold; margin-top: 10px;">Növbəti şans: <span id="time-left">00:00:00</span></div>
         </div>
     </div>
@@ -90,7 +93,6 @@
             <h3 style="margin-bottom: 5px;">Dostunu gətir, 0.03₼ qazan. 🚀</h3>
             <p style="font-size: 13px; opacity: 0.9;">Limitsiz dəvət, sonsuz qazanc imkanı!</p>
         </div>
-        
         <div class="card">
             <div id="ref-link-box" style="border:2px dashed var(--primary); padding:10px; border-radius:12px; font-size:11px; margin-bottom:15px; color:var(--primary); font-weight:bold; word-break: break-all;">https://t.me/Pulify_bot?start=5103173768</div>
             <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
@@ -99,7 +101,6 @@
             </div>
             <button class="btn-main" style="background:#333; margin-top:10px;" onclick="copyLink()"><i class="fas fa-copy"></i> Linki Kopyala</button>
         </div>
-
         <div class="card" style="background: #f9f9f9; border: 1px solid #eee;">
             <div style="font-size: 14px; font-weight: bold; color: var(--dark);">
                 Dəvət etdiyiniz dostlar: <span id="ref-count" style="color: var(--green); font-size: 18px;">0</span>
@@ -152,7 +153,6 @@
     </nav>
 
     <script>
-        // FIREBASE CONFIG (Admin Panellə Bağlantı)
         const firebaseConfig = {
             apiKey: "AIzaSyAf3y4KIjlzQf6CY9yw8S00K6DStiPvNAI",
             authDomain: "pulify-1b39b.firebaseapp.com",
@@ -165,24 +165,27 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
-        // LOKAL DATA
         let balance = parseFloat(localStorage.getItem('balance')) || 0;
         let coins = parseInt(localStorage.getItem('coins')) || 0;
         let refCount = parseInt(localStorage.getItem('refCount')) || 0;
         let clickLimit = 1000;
         let adReward = 0.03;
+        let taskReward = 0.05;
+        let spinReward = 0.03;
         let minWithdraw = 5.00;
         let currentMethod = 'm10';
         let lastSpin = localStorage.getItem('lastSpin') || 0;
         let lastTask = localStorage.getItem('lastTask') || 0;
 
-        // ADMİN PANEL AYARLARINI GÖTÜR
         db.ref('settings').on('value', s => {
             const d = s.val();
             if(d) {
-                adReward = parseFloat(d.adReward);
-                minWithdraw = parseFloat(d.minWithdraw);
+                adReward = parseFloat(d.adReward) || 0.03;
+                taskReward = parseFloat(d.taskReward) || 0.05;
+                spinReward = parseFloat(d.spinReward) || 0.03;
+                minWithdraw = parseFloat(d.minWithdraw) || 5.00;
                 document.getElementById('ad-reward-display').innerText = adReward;
+                document.getElementById('task-reward-display').innerText = taskReward;
                 document.getElementById('min-draw-val').innerText = minWithdraw;
                 update();
             }
@@ -196,25 +199,17 @@
             }
         });
 
-        // CANLI TAYMER FUNKSİYASI
-        function startRealTimeTimer(lastTime, duration, btnId, msgId, timerId) {
+        function startTimer(lastTime, duration, btnId, msgId, timerId) {
             const btn = document.getElementById(btnId);
             const msgBox = document.getElementById(msgId);
             const timerText = document.getElementById(timerId);
-
             const interval = setInterval(() => {
-                let now = Date.now();
-                let timeLeft = duration - (now - lastTime);
-
+                let timeLeft = duration - (Date.now() - lastTime);
                 if (timeLeft <= 0) {
-                    btn.disabled = false;
-                    btn.style.background = "var(--green)";
-                    msgBox.style.display = "none";
-                    clearInterval(interval);
+                    btn.disabled = false; btn.style.background = "var(--green)";
+                    msgBox.style.display = "none"; clearInterval(interval);
                 } else {
-                    btn.disabled = true;
-                    btn.style.background = "#ccc";
-                    msgBox.style.display = "block";
+                    btn.disabled = true; btn.style.background = "#ccc"; msgBox.style.display = "block";
                     let h = Math.floor(timeLeft / 3600000);
                     let m = Math.floor((timeLeft % 3600000) / 60000);
                     let s = Math.floor((timeLeft % 60000) / 1000);
@@ -230,16 +225,13 @@
             document.getElementById('p-coin').innerText = coins;
             document.getElementById('click-limit').innerText = clickLimit;
             document.getElementById('ref-count').innerText = refCount;
-            
             let dBtn = document.getElementById('draw-btn');
             dBtn.disabled = (balance < minWithdraw);
             dBtn.style.background = (balance >= minWithdraw) ? "var(--green)" : "#ccc";
-            
             localStorage.setItem('balance', balance);
             localStorage.setItem('coins', coins);
             localStorage.setItem('refCount', refCount);
-            checkSpinLimit();
-            checkTaskLimit();
+            checkSpinLimit(); checkTaskLimit();
         }
 
         function watchAd() {
@@ -251,37 +243,31 @@
             if(clickLimit > 0) {
                 coins++; clickLimit--; update();
                 let d = document.getElementById('main-diamond');
-                d.style.transform = "scale(0.9)";
-                setTimeout(() => d.style.transform = "scale(1)", 80);
-            } else alert("Gündəlik limit doldu!");
+                d.style.transform = "scale(0.9)"; setTimeout(() => d.style.transform = "scale(1)", 80);
+            } else alert("Limit doldu!");
         }
 
         function runSpin() {
-            let now = Date.now();
-            if (now - lastSpin < 86400000) return;
+            if (Date.now() - lastSpin < 86400000) return;
             document.getElementById('main-wheel').style.transform = "rotate(3600deg)";
             setTimeout(() => {
-                balance += 0.03; lastSpin = Date.now();
-                localStorage.setItem('lastSpin', lastSpin);
-                update(); alert("Təbrik! +0.03 ₼");
+                balance += spinReward; lastSpin = Date.now();
+                localStorage.setItem('lastSpin', lastSpin); update();
+                alert("Təbrik! +" + spinReward + " ₼");
             }, 4000);
         }
 
         function completeTask(event) {
-            let now = Date.now();
-            if (now - lastTask < 259200000) { event.preventDefault(); return; }
-            balance += 0.05; lastTask = now;
+            if (Date.now() - lastTask < 86400000) { event.preventDefault(); return; }
+            balance += taskReward; lastTask = Date.now();
             localStorage.setItem('lastTask', lastTask); update();
         }
 
         function sendWithdraw() {
             const num = document.getElementById('pay-num').value;
             if(num.length < 8) return alert("Düzgün məlumat yazın!");
-            db.ref('payouts').push({
-                number: num, amount: balance.toFixed(2), method: currentMethod, time: Date.now()
-            }).then(() => {
-                balance = 0; update(); alert("Sorğu adminə göndərildi!"); closeSub('draw-m');
-            });
+            db.ref('payouts').push({ number: num, amount: balance.toFixed(2), method: currentMethod, time: Date.now() })
+            .then(() => { balance = 0; update(); alert("Sorğu göndərildi!"); closeSub('draw-m'); });
         }
 
         function nav(id, el) {
@@ -292,7 +278,6 @@
         }
         function openSub(id) { document.getElementById(id).style.display = 'flex'; }
         function closeSub(id) { document.getElementById(id).style.display = 'none'; }
-        
         function setMethod(m) {
             currentMethod = m;
             document.getElementById('m10-tab').classList.toggle('active', m==='m10');
@@ -300,25 +285,13 @@
         }
 
         function checkSpinLimit() {
-            let now = Date.now();
-            if (now - lastSpin < 86400000) {
-                startRealTimeTimer(lastSpin, 86400000, 'spin-btn', 'spin-timer', 'time-left');
-            } else {
-                document.getElementById('spin-btn').disabled = false;
-                document.getElementById('spin-btn').style.background = "var(--green)";
-                document.getElementById('spin-timer').style.display = 'none';
-            }
+            if (Date.now() - lastSpin < 86400000) startTimer(lastSpin, 86400000, 'spin-btn', 'spin-timer', 'time-left');
+            else { document.getElementById('spin-btn').disabled = false; document.getElementById('spin-timer').style.display = 'none'; }
         }
 
         function checkTaskLimit() {
-            let now = Date.now();
-            if (now - lastTask < 259200000) {
-                startRealTimeTimer(lastTask, 259200000, 'task-btn', 'task-timer-msg', 'task-time-left');
-            } else {
-                document.getElementById('task-btn').disabled = false;
-                document.getElementById('task-btn').style.background = "var(--green)";
-                document.getElementById('task-timer-msg').style.display = 'none';
-            }
+            if (Date.now() - lastTask < 86400000) startTimer(lastTask, 86400000, 'task-btn', 'task-timer-msg', 'task-time-left');
+            else { document.getElementById('task-btn').disabled = false; document.getElementById('task-timer-msg').style.display = 'none'; }
         }
 
         function convertCoins() {
@@ -332,14 +305,12 @@
         }
 
         window.onload = function() {
+            update();
             let userId = "5103173768"; 
             let myUrl = "https://t.me/Pulify_bot?start=" + userId;
-            let attractiveText = "Hər dəvətə 0.03 ₼ qazan! 🔥 Pulify-a qoşul, birlikdə real pul qazanaq. 💸 Çıxarış m10 və Karta! 🚀";
-            
-            document.getElementById('wa-btn').href = "https://api.whatsapp.com/send?text=" + encodeURIComponent(attractiveText + "\n\nKeçid: " + myUrl);
-            document.getElementById('tg-btn').href = "https://t.me/share/url?url=" + encodeURIComponent(myUrl) + "&text=" + encodeURIComponent(attractiveText);
-            
-            update();
+            let text = "Hər dəvətə 0.03 ₼ qazan! 🔥 Pulify-a qoşul, birlikdə real pul qazanaq. 💸";
+            document.getElementById('wa-btn').href = "https://api.whatsapp.com/send?text=" + encodeURIComponent(text + "\n" + myUrl);
+            document.getElementById('tg-btn').href = "https://t.me/share/url?url=" + encodeURIComponent(myUrl) + "&text=" + encodeURIComponent(text);
         }
     </script>
 </body>
