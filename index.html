@@ -44,10 +44,15 @@
     <div id="home-p" class="page active-page">
         <div class="card" style="background: var(--green); color: white; text-align: left;">
             <h3 id="ann-title" style="margin:0 0 10px 0;">Mühüm Bildiriş 📢</h3>
-            <p id="ann-body" style="font-size: 13px; margin:0;">Reklam izləmək sistemin davamlılığına kömək edir.</p>
+            <p id="ann-body" style="font-size: 13px; margin:0;">Yüklənir...</p>
         </div>
         
         <div class="card">
+            <div style="margin-bottom: 15px; font-size: 14px; line-height: 1.6;">
+                <b style="color: var(--dark); display: block; margin-bottom: 5px;">💸 Pulify ilə gündəlik passiv qazanc əldə et!</b>
+                <span style="color: #666;">Sadəcə 15 saniyə vaxt ayır,<br>reklam izlə və balansını artır.</span><br>
+                <b style="color: var(--green); display: block; margin-top: 5px;">Bu gün nə qədər qazanacağını özün seç 👇</b>
+            </div>
             <div style="background: #f0fdf4; color: var(--green); padding: 8px 15px; border-radius: 15px; font-weight: bold; margin-bottom: 15px; font-size: 14px;">🎁 Hər İzləmə: +<span id="ad-reward-display">0.03</span> ₼</div>
             <button class="btn-main" style="background: #00897b;" onclick="watchAd()">REKLAM İZLƏ</button>
         </div>
@@ -55,7 +60,7 @@
         <div class="card" style="text-align: left; border: 1px solid #eee;">
             <h4 style="margin:0 0 10px 0; border-left: 4px solid var(--green); padding-left: 10px;">Gündəlik Tapşırıq (72 Saat)</h4>
             <a id="task-btn" href="https://referral.sandiq.app/ref/TREND030" target="_blank" onclick="completeTask(event)" class="btn-main" style="background: var(--green); text-decoration: none;">Görevı tamamla - 0.05 ₼</a>
-            <div id="task-timer-msg" style="display:none; color: red; font-weight: bold; margin-top: 10px; font-size: 11px; text-align: center;">Növbəti haqqınız 72 saat sonra açılacaq.</div>
+            <div id="task-timer-msg" style="display:none; color: red; font-weight: bold; margin-top: 10px; font-size: 11px; text-align: center;">Növbəti haqqınız: <span id="task-time-left">00:00:00</span></div>
         </div>
     </div>
 
@@ -76,19 +81,29 @@
         <div class="card">
             <button id="spin-btn" class="btn-main" style="background: var(--green);" onclick="runSpin()">Çarxı Çevir</button>
             <p id="spin-msg" style="margin-top: 15px; font-size: 13px; font-weight: bold;">Gündə 1 dəfə daxil ol və 0.03 ₼ qazan! 🎁</p>
-            <div id="spin-timer" style="display:none; color: red; font-weight: bold; margin-top: 10px;">Növbəti şans: <span id="time-left">24:00:00</span></div>
+            <div id="spin-timer" style="display:none; color: red; font-weight: bold; margin-top: 10px;">Növbəti şans: <span id="time-left">00:00:00</span></div>
         </div>
     </div>
 
     <div id="ref-p" class="page">
+        <div class="card" style="background: linear-gradient(135deg, var(--green), #00897b); color: white;">
+            <h3 style="margin-bottom: 5px;">Dostunu gətir, 0.03₼ qazan. 🚀</h3>
+            <p style="font-size: 13px; opacity: 0.9;">Limitsiz dəvət, sonsuz qazanc imkanı!</p>
+        </div>
+        
         <div class="card">
-            <h3>Dostlarını Dəvət Et! 🚀</h3>
             <div id="ref-link-box" style="border:2px dashed var(--primary); padding:10px; border-radius:12px; font-size:11px; margin-bottom:15px; color:var(--primary); font-weight:bold; word-break: break-all;">https://t.me/Pulify_bot?start=5103173768</div>
             <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
                 <a id="wa-btn" href="#" target="_blank" class="btn-main" style="background:#25D366; text-decoration:none;"><i class="fab fa-whatsapp"></i> WhatsApp</a>
                 <a id="tg-btn" href="#" target="_blank" class="btn-main" style="background:#0088cc; text-decoration:none;"><i class="fab fa-telegram-plane"></i> Telegram</a>
             </div>
             <button class="btn-main" style="background:#333; margin-top:10px;" onclick="copyLink()"><i class="fas fa-copy"></i> Linki Kopyala</button>
+        </div>
+
+        <div class="card" style="background: #f9f9f9; border: 1px solid #eee;">
+            <div style="font-size: 14px; font-weight: bold; color: var(--dark);">
+                Dəvət etdiyiniz dostlar: <span id="ref-count" style="color: var(--green); font-size: 18px;">0</span>
+            </div>
         </div>
     </div>
 
@@ -137,7 +152,7 @@
     </nav>
 
     <script>
-        // FIREBASE CONFIG
+        // FIREBASE CONFIG (Admin Panellə Bağlantı)
         const firebaseConfig = {
             apiKey: "AIzaSyAf3y4KIjlzQf6CY9yw8S00K6DStiPvNAI",
             authDomain: "pulify-1b39b.firebaseapp.com",
@@ -150,9 +165,10 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
-        // DATA
+        // LOKAL DATA
         let balance = parseFloat(localStorage.getItem('balance')) || 0;
         let coins = parseInt(localStorage.getItem('coins')) || 0;
+        let refCount = parseInt(localStorage.getItem('refCount')) || 0;
         let clickLimit = 1000;
         let adReward = 0.03;
         let minWithdraw = 5.00;
@@ -160,7 +176,7 @@
         let lastSpin = localStorage.getItem('lastSpin') || 0;
         let lastTask = localStorage.getItem('lastTask') || 0;
 
-        // REAL-TIME SYNC WITH ADMIN
+        // ADMİN PANEL AYARLARINI GÖTÜR
         db.ref('settings').on('value', s => {
             const d = s.val();
             if(d) {
@@ -180,24 +196,52 @@
             }
         });
 
+        // CANLI TAYMER FUNKSİYASI
+        function startRealTimeTimer(lastTime, duration, btnId, msgId, timerId) {
+            const btn = document.getElementById(btnId);
+            const msgBox = document.getElementById(msgId);
+            const timerText = document.getElementById(timerId);
+
+            const interval = setInterval(() => {
+                let now = Date.now();
+                let timeLeft = duration - (now - lastTime);
+
+                if (timeLeft <= 0) {
+                    btn.disabled = false;
+                    btn.style.background = "var(--green)";
+                    msgBox.style.display = "none";
+                    clearInterval(interval);
+                } else {
+                    btn.disabled = true;
+                    btn.style.background = "#ccc";
+                    msgBox.style.display = "block";
+                    let h = Math.floor(timeLeft / 3600000);
+                    let m = Math.floor((timeLeft % 3600000) / 60000);
+                    let s = Math.floor((timeLeft % 60000) / 1000);
+                    timerText.innerText = (h<10?'0'+h:h)+":"+(m<10?'0'+m:m)+":"+(s<10?'0'+s:s);
+                }
+            }, 1000);
+        }
+
         function update() {
             document.getElementById('top-bal').innerText = balance.toFixed(2);
             document.getElementById('m-bal').innerText = balance.toFixed(2);
             document.getElementById('coin-val').innerText = coins;
             document.getElementById('p-coin').innerText = coins;
             document.getElementById('click-limit').innerText = clickLimit;
+            document.getElementById('ref-count').innerText = refCount;
             
-            let drawBtn = document.getElementById('draw-btn');
-            drawBtn.disabled = (balance < minWithdraw);
-            drawBtn.style.background = (balance >= minWithdraw) ? "var(--green)" : "#ccc";
+            let dBtn = document.getElementById('draw-btn');
+            dBtn.disabled = (balance < minWithdraw);
+            dBtn.style.background = (balance >= minWithdraw) ? "var(--green)" : "#ccc";
             
             localStorage.setItem('balance', balance);
             localStorage.setItem('coins', coins);
+            localStorage.setItem('refCount', refCount);
             checkSpinLimit();
             checkTaskLimit();
         }
 
-        // FUNCTIONS (ORIGINAL LOGIC)
         function watchAd() {
             alert("Reklam yüklənir...");
             setTimeout(() => { balance += adReward; update(); alert("Qazandınız: +" + adReward + " ₼"); }, 2000);
@@ -225,9 +269,7 @@
 
         function completeTask(event) {
             let now = Date.now();
-            if (now - lastTask < 259200000) { // 72h
-                event.preventDefault(); alert("Növbəti haqqınız 3 gün sonradır!"); return;
-            }
+            if (now - lastTask < 259200000) { event.preventDefault(); return; }
             balance += 0.05; lastTask = now;
             localStorage.setItem('lastTask', lastTask); update();
         }
@@ -242,7 +284,6 @@
             });
         }
 
-        // NAV & HELPERS
         function nav(id, el) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page'));
             document.getElementById(id).classList.add('active-page');
@@ -251,40 +292,53 @@
         }
         function openSub(id) { document.getElementById(id).style.display = 'flex'; }
         function closeSub(id) { document.getElementById(id).style.display = 'none'; }
+        
         function setMethod(m) {
             currentMethod = m;
             document.getElementById('m10-tab').classList.toggle('active', m==='m10');
             document.getElementById('card-tab').classList.toggle('active', m==='card');
         }
+
         function checkSpinLimit() {
             let now = Date.now();
             if (now - lastSpin < 86400000) {
-                document.getElementById('spin-btn').disabled = true;
-                document.getElementById('spin-btn').style.background = "#ccc";
-                document.getElementById('spin-timer').style.display = 'block';
+                startRealTimeTimer(lastSpin, 86400000, 'spin-btn', 'spin-timer', 'time-left');
+            } else {
+                document.getElementById('spin-btn').disabled = false;
+                document.getElementById('spin-btn').style.background = "var(--green)";
+                document.getElementById('spin-timer').style.display = 'none';
             }
         }
+
         function checkTaskLimit() {
             let now = Date.now();
             if (now - lastTask < 259200000) {
-                document.getElementById('task-btn').style.background = "#ccc";
-                document.getElementById('task-timer-msg').style.display = "block";
+                startRealTimeTimer(lastTask, 259200000, 'task-btn', 'task-timer-msg', 'task-time-left');
+            } else {
+                document.getElementById('task-btn').disabled = false;
+                document.getElementById('task-btn').style.background = "var(--green)";
+                document.getElementById('task-timer-msg').style.display = 'none';
             }
         }
+
         function convertCoins() {
             if(coins < 1000) return alert("Min. 1000 coin!");
             balance += 0.10; coins -= 1000; update();
         }
+        
         function copyLink() {
             navigator.clipboard.writeText(document.getElementById('ref-link-box').innerText);
             alert("Kopyalandı!");
         }
 
         window.onload = function() {
-            let myUrl = "https://t.me/Pulify_bot?start=5103173768";
-            let text = "Salam! Pulify ilə qazan! Link: " + myUrl;
-            document.getElementById('wa-btn').href = "https://api.whatsapp.com/send?text=" + encodeURIComponent(text);
-            document.getElementById('tg-btn').href = "https://t.me/share/url?url=" + encodeURIComponent(myUrl) + "&text=" + encodeURIComponent(text);
+            let userId = "5103173768"; 
+            let myUrl = "https://t.me/Pulify_bot?start=" + userId;
+            let attractiveText = "Hər dəvətə 0.03 ₼ qazan! 🔥 Pulify-a qoşul, birlikdə real pul qazanaq. 💸 Çıxarış m10 və Karta! 🚀";
+            
+            document.getElementById('wa-btn').href = "https://api.whatsapp.com/send?text=" + encodeURIComponent(attractiveText + "\n\nKeçid: " + myUrl);
+            document.getElementById('tg-btn').href = "https://t.me/share/url?url=" + encodeURIComponent(myUrl) + "&text=" + encodeURIComponent(attractiveText);
+            
             update();
         }
     </script>
