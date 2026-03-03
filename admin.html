@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pulify Admin Control</title>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root { --bg: #f4f7f6; --primary: #2c3e50; --accent: #27ae60; --white: #ffffff; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; padding-bottom: 90px; }
+        #login-screen { position: fixed; inset: 0; background: var(--primary); display: flex; align-items: center; justify-content: center; z-index: 10000; }
+        .login-box { background: white; padding: 30px; border-radius: 20px; text-align: center; width: 85%; max-width: 320px; }
+        .header { background: var(--primary); color: white; padding: 25px; text-align: center; border-radius: 0 0 30px 30px; font-size: 20px; font-weight: bold; }
+        .section { display: none; padding: 20px; animation: fadeIn 0.4s; }
+        .active-section { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .card { background: var(--white); padding: 20px; border-radius: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); margin-bottom: 15px; }
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 15px; }
+        .stat-item { background: white; padding: 15px; border-radius: 15px; text-align: center; border: 1px solid #eee; }
+        .input-group { margin-bottom: 12px; }
+        label { display: block; font-size: 12px; color: #7f8c8d; margin-bottom: 5px; }
+        input, textarea { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 12px; box-sizing: border-box; }
+        .btn { width: 100%; background: var(--accent); color: white; border: none; padding: 14px; border-radius: 12px; font-weight: bold; cursor: pointer; }
+        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: white; display: flex; justify-content: space-around; padding: 12px 0; box-shadow: 0 -5px 20px rgba(0,0,0,0.08); border-radius: 25px 25px 0 0; }
+        .nav-item { color: #bdc3c7; font-size: 20px; cursor: pointer; text-align: center; }
+        .nav-item.active { color: var(--accent); }
+        .nav-item span { display: block; font-size: 10px; margin-top: 4px; }
+    </style>
+</head>
+<body>
+
+    <div id="login-screen">
+        <div class="login-box">
+            <h3>Admin Girişi</h3>
+            <input type="password" id="admin-pass" placeholder="Şifrə">
+            <button class="btn" onclick="checkAuth()" style="margin-top: 15px;">Giriş</button>
+        </div>
+    </div>
+
+    <div class="header">Pulify Admin Panel</div>
+
+    <div id="home" class="section active-section">
+        <div class="stats-grid">
+            <div class="stat-item"><i class="fas fa-users"></i><p>İstifadəçi</p><div id="st-users">0</div></div>
+            <div class="stat-item"><i class="fas fa-wallet"></i><p>Çıxarış</p><div id="st-payout">0 ₼</div></div>
+        </div>
+        <div class="card">
+            <h3><i class="fas fa-bullhorn"></i> Global Bildiriş</h3>
+            <input type="text" id="msg-title" placeholder="Başlıq" style="margin-bottom:10px">
+            <textarea id="msg-body" rows="3" placeholder="Hamıya gedəcək mesaj..."></textarea>
+            <button class="btn" onclick="sendGlobalMsg()" style="background:#3498db; margin-top:10px">Bildirişi Göndər</button>
+        </div>
+    </div>
+
+    <div id="settings" class="section">
+        <div class="card">
+            <h3><i class="fas fa-tools"></i> Qazanc Ayarları</h3>
+            <div class="input-group"><label>Reklam Qazancı (₼)</label><input type="number" step="0.001" id="set-ad"></div>
+            <div class="input-group"><label>Çarx Qazancı (₼)</label><input type="number" step="0.001" id="set-spin"></div>
+            <div class="input-group"><label>Gündəlik Tapşırıq (₼)</label><input type="number" step="0.01" id="set-task"></div>
+            <div class="input-group"><label>Min. Çıxarış (₼)</label><input type="number" id="set-min"></div>
+            <div class="input-group"><label>Coin Kursu (1000 = ? ₼)</label><input type="number" step="0.01" id="set-coin"></div>
+            <button class="btn" onclick="saveSettings()">Yadda Saxla</button>
+        </div>
+    </div>
+
+    <div id="promo" class="section">
+        <div class="card">
+            <h3><i class="fas fa-gift"></i> Yeni Promokod</h3>
+            <input type="text" id="p-code" placeholder="KOD" style="margin-bottom:10px">
+            <input type="number" id="p-limit" placeholder="İstifadə Limiti" style="margin-bottom:10px">
+            <input type="number" step="0.01" id="p-reward" placeholder="Məbləğ (₼)">
+            <button class="btn" onclick="createPromo()" style="background:#f39c12; margin-top:10px">Yarat</button>
+        </div>
+    </div>
+
+    <div id="payments" class="section">
+        <div class="card">
+            <h3><i class="fas fa-list"></i> Gözləyən İstəklər</h3>
+            <div id="payout-list" style="text-align: center; color:#999;">Məlumat yoxdur.</div>
+        </div>
+    </div>
+
+    <div class="bottom-nav">
+        <div class="nav-item active" onclick="showTab('home', this)"><i class="fas fa-home"></i><span>Ev</span></div>
+        <div class="nav-item" onclick="showTab('settings', this)"><i class="fas fa-cog"></i><span>Ayarlar</span></div>
+        <div class="nav-item" onclick="showTab('promo', this)"><i class="fas fa-tags"></i><span>Promo</span></div>
+        <div class="nav-item" onclick="showTab('payments', this)"><i class="fas fa-history"></i><span>Ödəniş</span></div>
+    </div>
+
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyAf3y4KIjlzQf6CY9yw8S00K6DStiPvNAI",
+            authDomain: "pulify-1b39b.firebaseapp.com",
+            projectId: "pulify-1b39b",
+            databaseURL: "https://pulify-1b39b-default-rtdb.firebaseio.com/",
+            storageBucket: "pulify-1b39b.firebasestorage.app",
+            messagingSenderId: "873330495196",
+            appId: "1:873330495196:web:165ec0858fa409a919ae19"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
+        function checkAuth() {
+            if(document.getElementById('admin-pass').value === "19961996m") {
+                document.getElementById('login-screen').style.display = 'none';
+                loadData();
+            } else { alert("Yanlış şifrə!"); }
+        }
+
+        function showTab(tabId, el) {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active-section'));
+            document.getElementById(tabId).classList.add('active-section');
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            el.classList.add('active');
+        }
+
+        function loadData() {
+            db.ref('stats').on('value', s => {
+                const d = s.val() || {};
+                document.getElementById('st-users').innerText = d.users || 0;
+                document.getElementById('st-payout').innerText = (d.payout || 0) + " ₼";
+            });
+            db.ref('settings').once('value', s => {
+                const d = s.val() || {};
+                document.getElementById('set-ad').value = d.adReward || 0.03;
+                document.getElementById('set-spin').value = d.spinReward || 0.01;
+                document.getElementById('set-task').value = d.taskReward || 0.50;
+                document.getElementById('set-min').value = d.minWithdraw || 10;
+                document.getElementById('set-coin').value = d.coinRate || 0.10;
+            });
+        }
+
+        function saveSettings() {
+            db.ref('settings').update({
+                adReward: document.getElementById('set-ad').value,
+                spinReward: document.getElementById('set-spin').value,
+                taskReward: document.getElementById('set-task').value,
+                minWithdraw: document.getElementById('set-min').value,
+                coinRate: document.getElementById('set-coin').value
+            }).then(() => alert("Ayarlar yeniləndi!"));
+        }
+
+        function sendGlobalMsg() {
+            const title = document.getElementById('msg-title').value;
+            const body = document.getElementById('msg-body').value;
+            if(title && body) {
+                db.ref('notifications').set({ title, body, time: Date.now() }).then(() => alert("Bildiriş göndərildi!"));
+            }
+        }
+
+        function createPromo() {
+            const code = document.getElementById('p-code').value;
+            const limit = document.getElementById('p-limit').value;
+            const reward = document.getElementById('p-reward').value;
+            if(code && limit && reward) {
+                db.ref('promocodes/' + code).set({ limit, reward, used: 0 }).then(() => alert("Kod yaradıldı!"));
+            }
+        }
+    </script>
+</body>
+</html>
