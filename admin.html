@@ -9,83 +9,51 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root { --bg: #e0f7fa; --primary: #00bcd4; --green: #4caf50; --dark: #37474f; --white: #ffffff; }
-        
         body { margin: 0; font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--dark); overflow-x: hidden; }
-        
-        /* Səhifə strukturu */
         .page { display: none; padding: 20px 20px 100px 20px; flex-direction: column; min-height: 100vh; box-sizing: border-box; }
         .active-page { display: flex; animation: fadeIn 0.3s; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
-        .app-header { width: 100%; display: flex; justify-content: center; padding: 15px; position: sticky; top: 0; background: var(--bg); z-index: 1000; box-sizing: border-box; }
-        .header-title { font-weight: 900; color: var(--green); font-size: 20px; letter-spacing: 1px; }
-
+        .app-header { width: 100%; text-align: center; padding: 15px; position: sticky; top: 0; background: var(--bg); z-index: 1000; }
+        .header-title { font-weight: 900; color: var(--green); font-size: 20px; }
         .card { width: 100%; background: var(--white); border-radius: 25px; padding: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); margin-bottom: 15px; box-sizing: border-box; }
-        
-        h2 { font-size: 16px; margin-top: 0; color: var(--green); display: flex; align-items: center; gap: 8px; margin-bottom: 15px; }
-
-        /* Giriş sahələri */
+        h2 { font-size: 16px; margin: 0 0 15px 0; color: var(--green); display: flex; align-items: center; gap: 8px; }
         .input-group { margin-bottom: 12px; }
-        label { display: block; font-size: 11px; font-weight: bold; color: #888; margin-bottom: 5px; margin-left: 5px; }
-        input { width: 100%; padding: 12px 15px; border: 1px solid #f0f0f0; border-radius: 15px; background: #fafafa; font-size: 14px; box-sizing: border-box; outline: none; transition: 0.2s; }
-        input:focus { border-color: var(--green); background: #fff; }
-
-        .btn-main { border: none; border-radius: 18px; padding: 15px; color: white; font-weight: bold; cursor: pointer; width: 100%; font-size: 15px; transition: 0.2s; background: var(--green); }
-        .btn-main:active { transform: scale(0.98); }
-
-        /* Naviqasiya Barı (Eynilə tətbiqdəki kimi) */
-        .nav-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: var(--green); display: flex; justify-content: space-around; padding: 12px 0; border-radius: 25px 25px 0 0; box-shadow: 0 -5px 20px rgba(0,0,0,0.1); z-index: 1500; }
-        .nav-link { color: rgba(255,255,255,0.6); font-size: 10px; display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; flex: 1; text-decoration: none; }
-        .nav-link i { font-size: 22px; }
+        label { display: block; font-size: 11px; font-weight: bold; color: #888; margin: 0 0 5px 5px; }
+        input { width: 100%; padding: 12px 15px; border: 1px solid #f0f0f0; border-radius: 15px; background: #fafafa; font-size: 14px; box-sizing: border-box; outline: none; }
+        .btn-main { border: none; border-radius: 18px; padding: 15px; color: white; font-weight: bold; cursor: pointer; width: 100%; font-size: 15px; background: var(--green); box-shadow: 0 4px 10px rgba(76,175,80,0.3); }
+        .nav-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: var(--green); display: flex; padding: 12px 0; border-radius: 25px 25px 0 0; z-index: 1500; }
+        .nav-link { color: rgba(255,255,255,0.6); font-size: 10px; display: flex; flex-direction: column; align-items: center; gap: 4px; flex: 1; cursor: pointer; }
         .nav-link.active { color: white; font-weight: bold; }
-
-        /* Analitika qutuları */
         .stat-box { background: #f0fdf4; padding: 15px; border-radius: 20px; text-align: center; border: 1px solid #dcfce7; margin-bottom: 10px; }
-        .stat-box b { display: block; font-size: 18px; color: var(--dark); }
-        .stat-box span { font-size: 10px; color: #777; text-transform: uppercase; }
-
-        /* Cədvəllər */
+        .stat-box b { display: block; font-size: 18px; }
         table { width: 100%; border-collapse: collapse; font-size: 13px; }
-        th { text-align: left; color: #999; padding: 10px 5px; font-weight: normal; border-bottom: 1px solid #eee; }
+        th { text-align: left; color: #999; padding: 10px 5px; border-bottom: 1px solid #eee; }
         td { padding: 12px 5px; border-bottom: 1px solid #f9f9f9; }
-        .badge { padding: 3px 8px; border-radius: 8px; font-size: 10px; font-weight: bold; }
-        .badge-m10 { background: #e3f2fd; color: #1976d2; }
     </style>
 </head>
 <body>
 
-    <div class="app-header">
-        <div class="header-title">PULIFY ADMİN</div>
-    </div>
+    <div class="app-header"><div class="header-title">PULIFY ADMİN</div></div>
 
     <div id="stats-p" class="page active-page">
         <div class="card">
             <h2><i class="fas fa-chart-pie"></i> Canlı Statistika</h2>
-            <div class="stat-box">
-                <span>Cəmi Reklam İzləmə</span>
-                <b id="total-ads">0</b>
-            </div>
-            <div class="stat-box">
-                <span>Aktiv Baxan Sayı</span>
-                <b id="active-viewers">0</b>
-            </div>
-            <div class="stat-box">
-                <span>Paylanılan Ümumi Məbləğ</span>
-                <b id="total-payouts">0.00 ₼</b>
-            </div>
+            <div class="stat-box"><span>Cəmi Reklam</span><b id="total-ads">0</b></div>
+            <div class="stat-box"><span>Baxan Sayı</span><b id="active-viewers">0</b></div>
+            <div class="stat-box"><span>Paylanılan Pul</span><b id="total-payouts">0.00 ₼</b></div>
         </div>
     </div>
 
     <div id="settings-p" class="page">
         <div class="card">
             <h2><i class="fas fa-cog"></i> Sistem Ayarları</h2>
-            <div class="input-group"><label>📢 Bildiriş Başlığı</label><input type="text" id="not-title"></div>
-            <div class="input-group"><label>📝 Bildiriş Mətni</label><input type="text" id="not-body"></div>
+            <div class="input-group"><label>📢 Bildiriş Başlığı</label><input type="text" id="not-title" placeholder="Başlıq yazın"></div>
+            <div class="input-group"><label>📝 Bildiriş Mətni</label><input type="text" id="not-body" placeholder="Mətn yazın"></div>
             <div class="input-group"><label>🎥 Reklam Qazancı (₼)</label><input type="number" id="ad-reward" step="0.01"></div>
             <div class="input-group"><label>🎡 Çarx Qazancı (₼)</label><input type="number" id="spin-reward" step="0.01"></div>
             <div class="input-group"><label>👥 Referal Qazancı (₼)</label><input type="number" id="ref-reward" step="0.01"></div>
             <div class="input-group"><label>💰 Görəv Qazancı (₼)</label><input type="number" id="task-reward" step="0.01"></div>
-            <div class="input-group"><label>🔗 Görəv Linki</label><input type="text" id="task-link"></div>
+            <div class="input-group"><label>🔗 Görəv Linki</label><input type="text" id="task-link" placeholder="https://..."></div>
             <div class="input-group"><label>💳 Min. Çıxarış (₼)</label><input type="number" id="min-draw"></div>
             <div class="input-group"><label>🔑 Aktiv Promokod</label><input type="text" id="promo-code"></div>
             <button class="btn-main" onclick="saveData()">AYARLARI YADDA SAXLA</button>
@@ -96,14 +64,7 @@
         <div class="card">
             <h2><i class="fas fa-wallet"></i> Çıxarış Sorğuları</h2>
             <table>
-                <thead>
-                    <tr>
-                        <th>Məlumat</th>
-                        <th>Metod</th>
-                        <th>Məbləğ</th>
-                        <th>Sil</th>
-                    </tr>
-                </thead>
+                <thead><tr><th>Məlumat</th><th>Metod</th><th>Məbləğ</th><th>X</th></tr></thead>
                 <tbody id="payout-list"></tbody>
             </table>
         </div>
@@ -111,15 +72,9 @@
 
     <div id="users-p" class="page">
         <div class="card">
-            <h2><i class="fas fa-users"></i> İstifadəçi Bazası</h2>
+            <h2><i class="fas fa-users"></i> İstifadəçilər</h2>
             <table>
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Balans</th>
-                        <th>Coin</th>
-                    </tr>
-                </thead>
+                <thead><tr><th>ID</th><th>Balans</th><th>Coin</th></tr></thead>
                 <tbody id="user-list"></tbody>
             </table>
         </div>
@@ -132,98 +87,101 @@
         <div class="nav-link" onclick="nav('users-p', this)"><i class="fas fa-user-friends"></i>User</div>
     </nav>
 
-    <script>
-        const firebaseConfig = {
-            apiKey: "AIzaSyAf3y4KIjlzQf6CY9yw8S00K6DStiPvNAI",
-            authDomain: "pulify-1b39b.firebaseapp.com",
-            projectId: "pulify-1b39b",
-            databaseURL: "https://pulify-1b39b-default-rtdb.firebaseio.com/",
-            storageBucket: "pulify-1b39b.firebasestorage.app",
-            messagingSenderId: "873330495196",
-            appId: "1:873330495196:web:165ec0858fa409a919ae19"
+<script>
+    const firebaseConfig = {
+        apiKey: "AIzaSyAf3y4KIjlzQf6CY9yw8S00K6DStiPvNAI",
+        authDomain: "pulify-1b39b.firebaseapp.com",
+        projectId: "pulify-1b39b",
+        databaseURL: "https://pulify-1b39b-default-rtdb.firebaseio.com/",
+        storageBucket: "pulify-1b39b.firebasestorage.app",
+        messagingSenderId: "873330495196",
+        appId: "1:873330495196:web:165ec0858fa409a919ae19"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    function nav(id, el) {
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page'));
+        document.getElementById(id).classList.add('active-page');
+        document.querySelectorAll('.nav-link').forEach(n => n.classList.remove('active'));
+        el.classList.add('active');
+    }
+
+    // VERİLƏRİ OXU (Undefined qarşısını almaq üçün || "" əlavə edildi)
+    db.ref('settings').on('value', s => {
+        const d = s.val() || {};
+        document.getElementById('ad-reward').value = d.adReward || 0;
+        document.getElementById('spin-reward').value = d.spinReward || 0;
+        document.getElementById('ref-reward').value = d.refReward || 0;
+        document.getElementById('task-reward').value = d.taskReward || 0;
+        document.getElementById('task-link').value = d.taskLink || "";
+        document.getElementById('min-draw').value = d.minWithdraw || 0;
+        document.getElementById('promo-code').value = d.promoCode || "";
+    });
+
+    db.ref('notifications').on('value', s => {
+        const d = s.val() || {};
+        document.getElementById('not-title').value = d.title || "";
+        document.getElementById('not-body').value = d.body || "";
+    });
+
+    // STATİSTİKA
+    db.ref('stats/ads').on('value', s => {
+        const d = s.val() || { count: 0, revenue: 0, viewers: {} };
+        document.getElementById('total-ads').innerText = d.count || 0;
+        document.getElementById('total-payouts').innerText = (d.revenue || 0).toFixed(2) + " ₼";
+        document.getElementById('active-viewers').innerText = d.viewers ? Object.keys(d.viewers).length : 0;
+    });
+
+    // ÇIXARIŞLAR
+    db.ref('payouts').on('value', s => {
+        const list = document.getElementById('payout-list');
+        list.innerHTML = "";
+        s.forEach(item => {
+            const p = item.val();
+            list.innerHTML += `<tr>
+                <td><b>${p.num || 'Adsız'}</b><br><small>${p.id || ''}</small></td>
+                <td><span style="background:#e3f2fd; padding:3px 7px; border-radius:5px; font-size:10px;">${(p.method || 'M10').toUpperCase()}</span></td>
+                <td style="color:red; font-weight:bold;">${p.amt || 0}₼</td>
+                <td><i class="fas fa-trash" onclick="del('payouts/${item.key}')" style="color:#ddd"></i></td>
+            </tr>`;
+        });
+    });
+
+    // İSTİFADƏÇİLƏR
+    db.ref('users').on('value', s => {
+        const list = document.getElementById('user-list');
+        list.innerHTML = "";
+        s.forEach(u => {
+            const val = u.val();
+            list.innerHTML += `<tr>
+                <td>ID:${u.key.substring(0,6)}</td>
+                <td style="color:green; font-weight:bold;">${(val.balance || 0).toFixed(2)}₼</td>
+                <td>${val.coins || 0}</td>
+            </tr>`;
+        });
+    });
+
+    function saveData() {
+        const settings = {
+            adReward: parseFloat(document.getElementById('ad-reward').value) || 0,
+            spinReward: parseFloat(document.getElementById('spin-reward').value) || 0,
+            refReward: parseFloat(document.getElementById('ref-reward').value) || 0,
+            taskReward: parseFloat(document.getElementById('task-reward').value) || 0,
+            taskLink: document.getElementById('task-link').value || "",
+            minWithdraw: parseFloat(document.getElementById('min-draw').value) || 0,
+            promoCode: document.getElementById('promo-code').value || ""
         };
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.database();
+        const nots = {
+            title: document.getElementById('not-title').value || "",
+            body: document.getElementById('not-body').value || ""
+        };
+        db.ref('settings').set(settings);
+        db.ref('notifications').set(nots);
+        alert("Baza yeniləndi! Artıq 'undefined' görünməyəcək. ✅");
+    }
 
-        // Menyü Keçidi
-        function nav(id, el) {
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page'));
-            document.getElementById(id).classList.add('active-page');
-            document.querySelectorAll('.nav-link').forEach(n => n.classList.remove('active'));
-            el.classList.add('active');
-        }
-
-        // Məlumatları gətir (Firebase)
-        db.ref('settings').on('value', s => {
-            const d = s.val(); if(!d) return;
-            document.getElementById('ad-reward').value = d.adReward;
-            document.getElementById('spin-reward').value = d.spinReward;
-            document.getElementById('ref-reward').value = d.refReward;
-            document.getElementById('task-reward').value = d.taskReward;
-            document.getElementById('task-link').value = d.taskLink;
-            document.getElementById('min-draw').value = d.minWithdraw;
-            document.getElementById('promo-code').value = d.promoCode;
-        });
-
-        db.ref('notifications').on('value', s => {
-            if(s.val()) {
-                document.getElementById('not-title').value = s.val().title;
-                document.getElementById('not-body').value = s.val().body;
-            }
-        });
-
-        db.ref('stats/ads').on('value', s => {
-            const d = s.val() || { count: 0, revenue: 0, viewers: {} };
-            document.getElementById('total-ads').innerText = d.count;
-            document.getElementById('total-payouts').innerText = parseFloat(d.revenue || 0).toFixed(2) + " ₼";
-            document.getElementById('active-viewers').innerText = d.viewers ? Object.keys(d.viewers).length : 0;
-        });
-
-        db.ref('payouts').on('value', s => {
-            const list = document.getElementById('payout-list');
-            list.innerHTML = "";
-            s.forEach(item => {
-                const p = item.val();
-                list.innerHTML += `<tr>
-                    <td><b>${p.num}</b></td>
-                    <td><span class="badge badge-m10">${p.method.toUpperCase()}</span></td>
-                    <td style="color:red; font-weight:bold;">${p.amt}₼</td>
-                    <td><i class="fas fa-trash" onclick="del('payouts/${item.key}')" style="color:#ccc"></i></td>
-                </tr>`;
-            });
-        });
-
-        db.ref('users').on('value', s => {
-            const list = document.getElementById('user-list');
-            list.innerHTML = "";
-            s.forEach(u => {
-                const val = u.val();
-                list.innerHTML += `<tr>
-                    <td>ID:${u.key.substring(0,6)}</td>
-                    <td style="color:green; font-weight:bold;">${parseFloat(val.balance || 0).toFixed(2)}₼</td>
-                    <td>${val.coins || 0}</td>
-                </tr>`;
-            });
-        });
-
-        function saveData() {
-            db.ref('settings').update({
-                adReward: parseFloat(document.getElementById('ad-reward').value),
-                spinReward: parseFloat(document.getElementById('spin-reward').value),
-                refReward: parseFloat(document.getElementById('ref-reward').value),
-                taskReward: parseFloat(document.getElementById('task-reward').value),
-                taskLink: document.getElementById('task-link').value,
-                minWithdraw: parseFloat(document.getElementById('min-draw').value),
-                promoCode: document.getElementById('promo-code').value
-            });
-            db.ref('notifications').update({
-                title: document.getElementById('not-title').value,
-                body: document.getElementById('not-body').value
-            });
-            alert("Yadda saxlanıldı! ✅");
-        }
-
-        function del(path) { if(confirm("Silinsin?")) db.ref(path).remove(); }
-    </script>
+    function del(path) { if(confirm("Silinsin?")) db.ref(path).remove(); }
+</script>
 </body>
 </html>
