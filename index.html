@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>PULIFY FINAL MASTER</title>
+    <title>PULIFY - Qazanmağa Başla</title>
 
-    <meta name="monetag" content="BURAYA_KOPYALADIĞIN_KODU_YAZ">
+    <meta name="monetag" content="7ff2cf80bb9e8c55a13cff99a87d4c3f">
 
     <script src="https://alwingulla.com/88/pfe/current/tag.min.js?z=8874632"></script>
 
@@ -22,15 +22,11 @@
         .app-header { width: 100%; display: flex; justify-content: space-between; align-items: center; padding: 10px 20px; position: sticky; top: 0; background: var(--bg); z-index: 1000; box-sizing: border-box; }
         .wallet-badge { background: var(--white); padding: 8px 15px; border-radius: 12px; font-weight: 800; color: #00796b; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
         .card { width: 100%; background: var(--white); border-radius: 25px; padding: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); margin-bottom: 15px; text-align: center; box-sizing: border-box; }
-        .btn-main { border: none; border-radius: 18px; padding: 15px; color: white; font-weight: bold; cursor: pointer; width: 100%; font-size: 16px; transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; }
+        .btn-main { border: none; border-radius: 18px; padding: 15px; color: white; font-weight: bold; cursor: pointer; width: 100%; font-size: 16px; transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; border-bottom: 4px solid rgba(0,0,0,0.1); }
         .nav-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: var(--green); display: flex; justify-content: space-around; padding: 15px 0; border-radius: 25px 25px 0 0; box-shadow: 0 -5px 20px rgba(0,0,0,0.1); z-index: 1500; }
         .nav-link { color: rgba(255,255,255,0.6); font-size: 11px; display: flex; flex-direction: column; align-items: center; gap: 5px; cursor: pointer; flex: 1; text-decoration: none; }
         .nav-link i { font-size: 26px; }
         .nav-link.active { color: white; font-weight: bold; }
-        .sub-layer { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg); z-index: 2000; display: none; flex-direction: column; padding: 20px; box-sizing: border-box; overflow-y: auto; }
-        .method-tabs { display: flex; gap: 10px; margin-bottom: 20px; }
-        .method-btn { flex: 1; padding: 12px; border-radius: 12px; border: 1px solid #ddd; background: white; font-weight: bold; }
-        .method-btn.active { background: var(--green); color: white; }
     </style>
 </head>
 <body>
@@ -42,74 +38,49 @@
 
     <div id="home-p" class="page active-page">
         <div class="card" style="background: var(--green); color: white; text-align: left;">
-            <h3 id="ann-title">Yüklənir...</h3>
-            <p id="ann-body">Zəhmət olmasa gözləyin.</p>
+            <h3 id="ann-title">Bildiriş</h3>
+            <p id="ann-body">Xoş gəldiniz! Reklam izləyərək qazanmağa başlayın.</p>
         </div>
         
         <div class="card">
             <div style="margin-bottom: 15px; font-size: 14px;">
-                <b>💸 Reklam izlə, balansını artır!</b><br>
-                <span style="color: #666;">Hər reklam sənə qazanc gətirir.</span>
+                <b>💰 Reklam İzlə və Qazan!</b><br>
+                <span style="color: #666;">Hər izləmə üçün balansınız artacaq.</span>
             </div>
-            <div style="background: #f0fdf4; color: var(--green); padding: 8px 15px; border-radius: 15px; font-weight: bold; margin-bottom: 15px;">🎁 Mükafat: +<span id="ad-reward-display">0.03</span> ₼</div>
+            <div style="background: #f0fdf4; color: var(--green); padding: 10px; border-radius: 15px; font-weight: bold; margin-bottom: 15px;">Mükafat: +<span id="ad-rew">0.03</span> ₼</div>
             <button class="btn-main" style="background: #00897b;" onclick="watchAd()">REKLAM İZLƏ</button>
         </div>
 
         <div class="card" style="text-align: left;">
-            <h4 style="margin:0 0 10px 0;">Günün görəvi</h4>
-            <a id="task-btn" href="#" target="_blank" onclick="completeTask(event)" class="btn-main" style="background: var(--green);">Görəvi tamamla - <span id="task-reward-display">0.05</span> ₼</a>
-            <div id="task-timer-msg" style="display:none; color: red; text-align: center; margin-top: 10px;">Növbəti haqq: <span id="task-time-left">00:00:00</span></div>
+            <h4 style="margin:0 0 10px 0;">Günün Görəvi</h4>
+            <a id="task-btn" href="#" target="_blank" onclick="completeTask(event)" class="btn-main" style="background: var(--green);">Görəvi Tamamla</a>
         </div>
     </div>
 
     <div id="click-p" class="page">
         <div class="card" style="background: var(--green); color: white;">
             <div id="coin-val" style="font-size: 45px; font-weight: 900;">0</div>
-            <p>Limit: <span id="click-limit">1000</span> / 1000</p>
+            <p>Limit: <span id="click-limit">1000</span></p>
         </div>
-        <div onclick="doClick()" id="main-diamond" style="width: 210px; height: 210px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 80px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); cursor: pointer; user-select: none; margin-top: 20px;">💎</div>
-    </div>
-
-    <div id="spin-p" class="page">
-        <div id="main-wheel" style="width: 260px; height: 260px; border-radius: 50%; border: 8px solid #ffd54f; transition: 4s; background: conic-gradient(#4db6ac 0 45deg, #80deea 45deg 90deg, #4db6ac 90deg 135deg, #80deea 135deg 180deg, #4db6ac 180deg 225deg, #80deea 225deg 270deg, #4db6ac 270deg 315deg, #80deea 315deg 360deg);"></div>
-        <button id="spin-btn" class="btn-main" style="background: var(--green); margin-top: 20px;" onclick="runSpin()">Çarxı Çevir</button>
-        <div id="spin-timer" style="display:none; color: red; margin-top: 10px;">Növbəti: <span id="time-left">00:00:00</span></div>
-    </div>
-
-    <div id="ref-p" class="page">
-        <div class="card" style="background: var(--green); color: white;"><h3>Dostunu gətir, qazan!</h3></div>
-        <div class="card">
-            <div id="ref-link-box" style="border:2px dashed var(--primary); padding:10px; font-size:11px; margin-bottom:15px; word-break: break-all;">Yüklənir...</div>
-            <button class="btn-main" style="background:#333;" onclick="copyLink()">Linki Kopyala</button>
-        </div>
+        <div onclick="doClick()" style="width: 200px; height: 200px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 70px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); cursor: pointer; user-select: none; margin-top: 30px;">💎</div>
     </div>
 
     <div id="prof-p" class="page">
-        <div class="card"><h3>@User_<span id="u-id-display">...</span></h3></div>
-        <button class="btn-main" style="background:var(--green); margin-bottom:10px;" onclick="openSub('draw-m')">Çıxarış Et</button>
-        <div class="card">Coin: <b id="p-coin">0</b> <button onclick="convertCoins()" style="background:var(--primary); color:white; border:none; padding:5px 10px; border-radius:5px;">Çevir</button></div>
-    </div>
-
-    <div id="draw-m" class="sub-layer">
-        <button onclick="closeSub('draw-m')" style="border:none; background:none; font-size:24px;"><i class="fas fa-arrow-left"></i> Geri</button>
+        <div class="card"><h3>İstifadəçi: <span id="u-id">...</span></h3></div>
         <div class="card">
-            <h3>Çıxarış</h3>
-            <p>Balans: <span id="m-bal">0.00</span> ₼</p>
-            <input type="number" id="pay-num" placeholder="M10 və ya Kart nömrəsi" style="width:100%; padding:15px; border:1px solid #ddd; border-radius:12px;">
-            <button id="draw-btn" class="btn-main" style="background:#ccc; margin-top:20px;" onclick="sendWithdraw()">Təsdiqlə</button>
+            <p>Balans: <b id="p-bal">0.00</b> ₼</p>
+            <button class="btn-main" style="background: var(--green);" onclick="alert('Minimum çıxarış 5 AZN-dir.')">Çıxarış Et</button>
         </div>
     </div>
 
     <nav class="nav-bar">
         <div class="nav-link active" onclick="nav('home-p', this)"><i class="fas fa-home"></i>Ev</div>
         <div class="nav-link" onclick="nav('click-p', this)"><i class="fas fa-hand-pointer"></i>Tıkla</div>
-        <div class="nav-link" onclick="nav('spin-p', this)"><i class="fas fa-dharmachakra"></i>Çarx</div>
-        <div class="nav-link" onclick="nav('ref-p', this)"><i class="fas fa-user-plus"></i>Ref</div>
         <div class="nav-link" onclick="nav('prof-p', this)"><i class="fas fa-user-circle"></i>Profil</div>
     </nav>
 
     <script>
-        // FIREBASE AYARLARI
+        // FIREBASE QURAŞDIRILMASI
         const firebaseConfig = {
             apiKey: "AIzaSyAf3y4KIjlzQf6CY9yw8S00K6DStiPvNAI",
             authDomain: "pulify-1b39b.firebaseapp.com",
@@ -122,75 +93,55 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
-        let userId = localStorage.getItem('userId') || "5103173768";
+        let userId = localStorage.getItem('userId') || Math.floor(Math.random() * 1000000);
+        localStorage.setItem('userId', userId);
+
         let balance = parseFloat(localStorage.getItem('balance')) || 0;
         let coins = parseInt(localStorage.getItem('coins')) || 0;
-        let clickLimit = 1000;
         let adReward = 0.03;
-        let minWithdraw = 5.00;
-        let lastSpin = localStorage.getItem('lastSpin') || 0;
-        let lastTask = localStorage.getItem('lastTask') || 0;
 
-        // 4. REKLAM FUNKSİYASI (MONETAG ÜÇÜN)
+        // REKLAM FUNKSİYASI
         function watchAd() {
-            alert("Reklam yüklənir...");
             if (typeof show_8874632 === 'function') {
-                show_8874632().then(() => { awardUser(); }).catch(() => { alert("Reklam hazır deyil."); });
+                show_8874632().then(() => {
+                    addMoney(adReward);
+                }).catch(() => {
+                    alert("Reklam hələ yüklənməyib, bir neçə saniyə gözləyin.");
+                });
             } else {
-                setTimeout(awardUser, 3000); // Test rejimi
+                alert("Reklam sistemi hazır deyil. Saytın təsdiqlənməsini gözləyin.");
             }
         }
 
-        function awardUser() {
-            balance += adReward;
-            update();
-            db.ref('stats/ads').transaction(c => {
-                if(!c) c = {count:0, revenue:0};
-                c.count++; c.revenue += adReward;
-                return c;
-            });
-            alert("Təbrik! +" + adReward + " ₼ qazandınız.");
+        function addMoney(amount) {
+            balance += amount;
+            updateUI();
+            db.ref('users/' + userId).update({ balance: balance });
+            alert("Təbrik! +" + amount + " AZN balansınıza əlavə edildi.");
         }
 
-        function update() {
+        function doClick() {
+            coins++;
+            updateUI();
+        }
+
+        function updateUI() {
             document.getElementById('top-bal').innerText = balance.toFixed(2);
-            document.getElementById('m-bal').innerText = balance.toFixed(2);
+            document.getElementById('p-bal').innerText = balance.toFixed(2);
             document.getElementById('coin-val').innerText = coins;
-            document.getElementById('p-coin').innerText = coins;
-            document.getElementById('click-limit').innerText = clickLimit;
-            document.getElementById('u-id-display').innerText = userId;
-            
-            let dBtn = document.getElementById('draw-btn');
-            dBtn.disabled = (balance < minWithdraw);
-            dBtn.style.background = (balance >= minWithdraw) ? "var(--green)" : "#ccc";
-            
+            document.getElementById('u-id').innerText = userId;
             localStorage.setItem('balance', balance);
             localStorage.setItem('coins', coins);
-            db.ref('users/' + userId).update({ balance: balance, coins: coins });
         }
 
-        // DİGƏR FUNKSİYALAR (TOXUNULMADI)
-        function doClick() { if(clickLimit > 0) { coins++; clickLimit--; update(); } }
-        function nav(id, el) { 
+        function nav(id, el) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page'));
             document.getElementById(id).classList.add('active-page');
             document.querySelectorAll('.nav-link').forEach(n => n.classList.remove('active'));
             el.classList.add('active');
         }
-        function openSub(id) { document.getElementById(id).style.display = 'flex'; }
-        function closeSub(id) { document.getElementById(id).style.display = 'none'; }
-        
-        db.ref('settings').on('value', s => {
-            const d = s.val(); if(d) { adReward = d.adReward; minWithdraw = d.minWithdraw; update(); }
-        });
-        db.ref('notifications').on('value', s => {
-            const d = s.val(); if(d) { document.getElementById('ann-title').innerText = d.title; document.getElementById('ann-body').innerText = d.body; }
-        });
 
-        window.onload = () => { 
-            update(); 
-            document.getElementById('ref-link-box').innerText = "https://mir1996.github.io/Pulify/?ref=" + userId;
-        };
+        window.onload = updateUI;
     </script>
 </body>
 </html>
