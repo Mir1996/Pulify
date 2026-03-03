@@ -2,102 +2,135 @@
 <html lang="az">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pulify Admin | Full System</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>PULIFY | MASTER ADMİN</title>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root { --bg: #f4f7f6; --dark: #1a2a6c; --accent: #27ae60; --m10: #00b09b; --card: #3498db; }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; padding-bottom: 80px; }
+        :root { --bg: #e0f7fa; --primary: #00bcd4; --green: #4caf50; --dark: #37474f; --white: #ffffff; }
         
-        .header { background: var(--dark); color: white; padding: 25px; text-align: center; font-size: 22px; font-weight: bold; border-radius: 0 0 30px 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
-
-        .section { display: none; padding: 20px; animation: fadeIn 0.3s; }
-        .active-section { display: block; }
+        body { margin: 0; font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--dark); overflow-x: hidden; }
+        
+        /* Səhifə strukturu */
+        .page { display: none; padding: 20px 20px 100px 20px; flex-direction: column; min-height: 100vh; box-sizing: border-box; }
+        .active-page { display: flex; animation: fadeIn 0.3s; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        /* Statistika Kartları */
-        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
-        .stat-item { background: white; padding: 15px; border-radius: 20px; text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.05); border: 1px solid #eee; }
-        .stat-item i { font-size: 24px; color: var(--dark); margin-bottom: 8px; }
-        .stat-item b { display: block; font-size: 18px; color: #333; }
+        .app-header { width: 100%; display: flex; justify-content: center; padding: 15px; position: sticky; top: 0; background: var(--bg); z-index: 1000; box-sizing: border-box; }
+        .header-title { font-weight: 900; color: var(--green); font-size: 20px; letter-spacing: 1px; }
 
-        .card { background: white; padding: 20px; border-radius: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); margin-bottom: 20px; }
+        .card { width: 100%; background: var(--white); border-radius: 25px; padding: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); margin-bottom: 15px; box-sizing: border-box; }
         
-        /* Ödəniş Siyahısı */
-        .payout-box { background: #fff; border: 1px solid #eee; padding: 15px; border-radius: 15px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
-        .btn-done { background: var(--accent); color: white; border: none; padding: 10px 15px; border-radius: 10px; cursor: pointer; font-weight: bold; }
+        h2 { font-size: 16px; margin-top: 0; color: var(--green); display: flex; align-items: center; gap: 8px; margin-bottom: 15px; }
 
-        /* Girişlər */
-        input, textarea { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 12px; box-sizing: border-box; }
-        .btn-main { width: 100%; background: var(--dark); color: white; border: none; padding: 15px; border-radius: 12px; font-weight: bold; cursor: pointer; }
+        /* Giriş sahələri */
+        .input-group { margin-bottom: 12px; }
+        label { display: block; font-size: 11px; font-weight: bold; color: #888; margin-bottom: 5px; margin-left: 5px; }
+        input { width: 100%; padding: 12px 15px; border: 1px solid #f0f0f0; border-radius: 15px; background: #fafafa; font-size: 14px; box-sizing: border-box; outline: none; transition: 0.2s; }
+        input:focus { border-color: var(--green); background: #fff; }
 
-        /* Alt Menyu */
-        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: white; display: flex; justify-content: space-around; padding: 15px; box-shadow: 0 -5px 20px rgba(0,0,0,0.1); border-top: 1px solid #eee; }
-        .nav-item { color: #ccc; font-size: 22px; text-align: center; cursor: pointer; transition: 0.3s; }
-        .nav-item span { display: block; font-size: 10px; margin-top: 4px; }
-        .nav-item.active { color: var(--dark); transform: translateY(-5px); }
+        .btn-main { border: none; border-radius: 18px; padding: 15px; color: white; font-weight: bold; cursor: pointer; width: 100%; font-size: 15px; transition: 0.2s; background: var(--green); }
+        .btn-main:active { transform: scale(0.98); }
+
+        /* Naviqasiya Barı (Eynilə tətbiqdəki kimi) */
+        .nav-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: var(--green); display: flex; justify-content: space-around; padding: 12px 0; border-radius: 25px 25px 0 0; box-shadow: 0 -5px 20px rgba(0,0,0,0.1); z-index: 1500; }
+        .nav-link { color: rgba(255,255,255,0.6); font-size: 10px; display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; flex: 1; text-decoration: none; }
+        .nav-link i { font-size: 22px; }
+        .nav-link.active { color: white; font-weight: bold; }
+
+        /* Analitika qutuları */
+        .stat-box { background: #f0fdf4; padding: 15px; border-radius: 20px; text-align: center; border: 1px solid #dcfce7; margin-bottom: 10px; }
+        .stat-box b { display: block; font-size: 18px; color: var(--dark); }
+        .stat-box span { font-size: 10px; color: #777; text-transform: uppercase; }
+
+        /* Cədvəllər */
+        table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        th { text-align: left; color: #999; padding: 10px 5px; font-weight: normal; border-bottom: 1px solid #eee; }
+        td { padding: 12px 5px; border-bottom: 1px solid #f9f9f9; }
+        .badge { padding: 3px 8px; border-radius: 8px; font-size: 10px; font-weight: bold; }
+        .badge-m10 { background: #e3f2fd; color: #1976d2; }
     </style>
 </head>
 <body>
 
-    <div class="header">Pulify Admin Panel</div>
+    <div class="app-header">
+        <div class="header-title">PULIFY ADMİN</div>
+    </div>
 
-    <div id="home" class="section active-section">
-        <div class="stats-grid">
-            <div class="stat-item"><i class="fas fa-users"></i><span>İstifadəçi</span><b id="st-users">0</b></div>
-            <div class="stat-item"><i class="fas fa-link"></i><span>Referal</span><b id="st-refs">0</b></div>
-            <div class="stat-item"><i class="fas fa-play-circle"></i><span>Reklam</span><b id="st-ads">0</b></div>
-            <div class="stat-item"><i class="fas fa-wallet"></i><span>Ümumi Balans</span><b id="st-money">0 ₼</b></div>
-        </div>
-        
+    <div id="stats-p" class="page active-page">
         <div class="card">
-            <h3><i class="fas fa-bullhorn" style="color:#f39c12"></i> Global Bildiriş</h3>
-            <input type="text" id="msg-title" placeholder="Başlıq">
-            <textarea id="msg-body" rows="2" placeholder="Mesajınız..."></textarea>
-            <button class="btn-main" onclick="sendGlobalMsg()">Bütün İstifadəçilərə Göndər</button>
+            <h2><i class="fas fa-chart-pie"></i> Canlı Statistika</h2>
+            <div class="stat-box">
+                <span>Cəmi Reklam İzləmə</span>
+                <b id="total-ads">0</b>
+            </div>
+            <div class="stat-box">
+                <span>Aktiv Baxan Sayı</span>
+                <b id="active-viewers">0</b>
+            </div>
+            <div class="stat-box">
+                <span>Paylanılan Ümumi Məbləğ</span>
+                <b id="total-payouts">0.00 ₼</b>
+            </div>
         </div>
     </div>
 
-    <div id="payments" class="section">
-        <div class="card" style="border-top: 5px solid var(--m10);">
-            <h3 style="color: var(--m10);"><i class="fas fa-mobile-alt"></i> m10 İstəkləri</h3>
-            <div id="m10-list">Yüklənir...</div>
-        </div>
-        <div class="card" style="border-top: 5px solid var(--card);">
-            <h3 style="color: var(--card);"><i class="fas fa-credit-card"></i> Kart İstəkləri</h3>
-            <div id="card-list">Yüklənir...</div>
-        </div>
-    </div>
-
-    <div id="promo" class="section">
+    <div id="settings-p" class="page">
         <div class="card">
-            <h3><i class="fas fa-tags"></i> Promokod Yarat</h3>
-            <input type="text" id="p-code" placeholder="KOD ADI">
-            <input type="number" id="p-limit" placeholder="İstifadə sayı (Limit)">
-            <input type="number" step="0.01" id="p-reward" placeholder="Məbləğ (₼)">
-            <button class="btn-main" onclick="createPromo()" style="background:#f39c12">Kodu Aktiv Et</button>
+            <h2><i class="fas fa-cog"></i> Sistem Ayarları</h2>
+            <div class="input-group"><label>📢 Bildiriş Başlığı</label><input type="text" id="not-title"></div>
+            <div class="input-group"><label>📝 Bildiriş Mətni</label><input type="text" id="not-body"></div>
+            <div class="input-group"><label>🎥 Reklam Qazancı (₼)</label><input type="number" id="ad-reward" step="0.01"></div>
+            <div class="input-group"><label>🎡 Çarx Qazancı (₼)</label><input type="number" id="spin-reward" step="0.01"></div>
+            <div class="input-group"><label>👥 Referal Qazancı (₼)</label><input type="number" id="ref-reward" step="0.01"></div>
+            <div class="input-group"><label>💰 Görəv Qazancı (₼)</label><input type="number" id="task-reward" step="0.01"></div>
+            <div class="input-group"><label>🔗 Görəv Linki</label><input type="text" id="task-link"></div>
+            <div class="input-group"><label>💳 Min. Çıxarış (₼)</label><input type="number" id="min-draw"></div>
+            <div class="input-group"><label>🔑 Aktiv Promokod</label><input type="text" id="promo-code"></div>
+            <button class="btn-main" onclick="saveData()">AYARLARI YADDA SAXLA</button>
         </div>
     </div>
 
-    <div id="settings" class="section">
+    <div id="draws-p" class="page">
         <div class="card">
-            <h3><i class="fas fa-cog"></i> Sistem Ayarları</h3>
-            <label>Reklam İzləmə (₼)</label><input type="number" step="0.001" id="set-ad">
-            <label>Çarx Qazancı (₼)</label><input type="number" step="0.001" id="set-spin">
-            <label>Minimum Çıxarış (₼)</label><input type="number" id="set-min">
-            <label>Coin Kursu (1000 Coin = ? ₼)</label><input type="number" step="0.01" id="set-coin">
-            <button class="btn-main" onclick="saveSettings()" style="background: var(--accent)">Yadda Saxla</button>
+            <h2><i class="fas fa-wallet"></i> Çıxarış Sorğuları</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Məlumat</th>
+                        <th>Metod</th>
+                        <th>Məbləğ</th>
+                        <th>Sil</th>
+                    </tr>
+                </thead>
+                <tbody id="payout-list"></tbody>
+            </table>
         </div>
     </div>
 
-    <div class="bottom-nav">
-        <div class="nav-item active" onclick="showTab('home', this)"><i class="fas fa-chart-bar"></i><span>Statistika</span></div>
-        <div class="nav-item" onclick="showTab('payments', this)"><i class="fas fa-wallet"></i><span>Ödəniş</span></div>
-        <div class="nav-item" onclick="showTab('promo', this)"><i class="fas fa-ticket-alt"></i><span>Promo</span></div>
-        <div class="nav-item" onclick="showTab('settings', this)"><i class="fas fa-user-cog"></i><span>Ayarlar</span></div>
+    <div id="users-p" class="page">
+        <div class="card">
+            <h2><i class="fas fa-users"></i> İstifadəçi Bazası</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Balans</th>
+                        <th>Coin</th>
+                    </tr>
+                </thead>
+                <tbody id="user-list"></tbody>
+            </table>
+        </div>
     </div>
+
+    <nav class="nav-bar">
+        <div class="nav-link active" onclick="nav('stats-p', this)"><i class="fas fa-chart-bar"></i>Stat</div>
+        <div class="nav-link" onclick="nav('settings-p', this)"><i class="fas fa-tools"></i>Ayarlar</div>
+        <div class="nav-link" onclick="nav('draws-p', this)"><i class="fas fa-money-bill-wave"></i>Çıxarış</div>
+        <div class="nav-link" onclick="nav('users-p', this)"><i class="fas fa-user-friends"></i>User</div>
+    </nav>
 
     <script>
         const firebaseConfig = {
@@ -112,83 +145,85 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
-        function showTab(tabId, el) {
-            document.querySelectorAll('.section').forEach(s => s.classList.remove('active-section'));
-            document.getElementById(tabId).classList.add('active-section');
-            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+        // Menyü Keçidi
+        function nav(id, el) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page'));
+            document.getElementById(id).classList.add('active-page');
+            document.querySelectorAll('.nav-link').forEach(n => n.classList.remove('active'));
             el.classList.add('active');
         }
 
-        // CANLI STATİSTİKA
-        db.ref('users').on('value', s => {
-            let ads = 0, money = 0, refs = 0;
-            s.forEach(u => {
-                const d = u.val();
-                ads += (d.adsWatched || 0);
-                money += (d.balance || 0);
-                if(d.referredBy) refs++;
-            });
-            document.getElementById('st-users').innerText = s.numChildren();
-            document.getElementById('st-ads').innerText = ads;
-            document.getElementById('st-money').innerText = money.toFixed(2) + " ₼";
-            document.getElementById('st-refs').innerText = refs;
-        });
-
-        // ÖDƏNİŞLƏRİ AYIRARAQ GƏTİR
-        db.ref('payouts').on('value', s => {
-            const mList = document.getElementById('m10-list');
-            const cList = document.getElementById('card-list');
-            mList.innerHTML = ""; cList.innerHTML = "";
-            s.forEach(item => {
-                const d = item.val();
-                const html = `<div class="payout-box">
-                    <div><b>${d.number}</b><br><small>${d.amount} ₼ (${d.name || 'Adsız'})</small></div>
-                    <button class="btn-done" onclick="complete('${item.key}')">Ödə</button>
-                </div>`;
-                if(d.method === 'm10') mList.innerHTML += html;
-                else cList.innerHTML += html;
-            });
-        });
-
-        // AYARLARI YÜKLƏ
+        // Məlumatları gətir (Firebase)
         db.ref('settings').on('value', s => {
-            const d = s.val() || {};
-            document.getElementById('set-ad').value = d.adReward || 0.03;
-            document.getElementById('set-spin').value = d.spinReward || 0.01;
-            document.getElementById('set-min').value = d.minWithdraw || 10;
-            document.getElementById('set-coin').value = d.coinRate || 0.10;
+            const d = s.val(); if(!d) return;
+            document.getElementById('ad-reward').value = d.adReward;
+            document.getElementById('spin-reward').value = d.spinReward;
+            document.getElementById('ref-reward').value = d.refReward;
+            document.getElementById('task-reward').value = d.taskReward;
+            document.getElementById('task-link').value = d.taskLink;
+            document.getElementById('min-draw').value = d.minWithdraw;
+            document.getElementById('promo-code').value = d.promoCode;
         });
 
-        function saveSettings() {
+        db.ref('notifications').on('value', s => {
+            if(s.val()) {
+                document.getElementById('not-title').value = s.val().title;
+                document.getElementById('not-body').value = s.val().body;
+            }
+        });
+
+        db.ref('stats/ads').on('value', s => {
+            const d = s.val() || { count: 0, revenue: 0, viewers: {} };
+            document.getElementById('total-ads').innerText = d.count;
+            document.getElementById('total-payouts').innerText = parseFloat(d.revenue || 0).toFixed(2) + " ₼";
+            document.getElementById('active-viewers').innerText = d.viewers ? Object.keys(d.viewers).length : 0;
+        });
+
+        db.ref('payouts').on('value', s => {
+            const list = document.getElementById('payout-list');
+            list.innerHTML = "";
+            s.forEach(item => {
+                const p = item.val();
+                list.innerHTML += `<tr>
+                    <td><b>${p.num}</b></td>
+                    <td><span class="badge badge-m10">${p.method.toUpperCase()}</span></td>
+                    <td style="color:red; font-weight:bold;">${p.amt}₼</td>
+                    <td><i class="fas fa-trash" onclick="del('payouts/${item.key}')" style="color:#ccc"></i></td>
+                </tr>`;
+            });
+        });
+
+        db.ref('users').on('value', s => {
+            const list = document.getElementById('user-list');
+            list.innerHTML = "";
+            s.forEach(u => {
+                const val = u.val();
+                list.innerHTML += `<tr>
+                    <td>ID:${u.key.substring(0,6)}</td>
+                    <td style="color:green; font-weight:bold;">${parseFloat(val.balance || 0).toFixed(2)}₼</td>
+                    <td>${val.coins || 0}</td>
+                </tr>`;
+            });
+        });
+
+        function saveData() {
             db.ref('settings').update({
-                adReward: document.getElementById('set-ad').value,
-                spinReward: document.getElementById('set-spin').value,
-                minWithdraw: document.getElementById('set-min').value,
-                coinRate: document.getElementById('set-coin').value
-            }).then(() => alert("Ayarlar bazada yeniləndi!"));
+                adReward: parseFloat(document.getElementById('ad-reward').value),
+                spinReward: parseFloat(document.getElementById('spin-reward').value),
+                refReward: parseFloat(document.getElementById('ref-reward').value),
+                taskReward: parseFloat(document.getElementById('task-reward').value),
+                taskLink: document.getElementById('task-link').value,
+                minWithdraw: parseFloat(document.getElementById('min-draw').value),
+                promoCode: document.getElementById('promo-code').value
+            });
+            db.ref('notifications').update({
+                title: document.getElementById('not-title').value,
+                body: document.getElementById('not-body').value
+            });
+            alert("Yadda saxlanıldı! ✅");
         }
 
-        function sendGlobalMsg() {
-            const t = document.getElementById('msg-title').value;
-            const b = document.getElementById('msg-body').value;
-            if(t && b) {
-                db.ref('notifications').set({ title: t, body: b, time: Date.now() })
-                .then(() => { alert("Bildiriş göndərildi!"); document.getElementById('msg-body').value = ""; });
-            }
-        }
-
-        function createPromo() {
-            const code = document.getElementById('p-code').value;
-            const limit = document.getElementById('p-limit').value;
-            const reward = document.getElementById('p-reward').value;
-            if(code && limit && reward) {
-                db.ref('promocodes/' + code).set({ limit, reward, used: 0 }).then(() => alert("Promokod aktivdir!"));
-            }
-        }
-
-        function complete(id) {
-            if(confirm("Silinsin?")) db.ref('payouts/' + id).remove();
-        }
+        function del(path) { if(confirm("Silinsin?")) db.ref(path).remove(); }
     </script>
 </body>
 </html>
