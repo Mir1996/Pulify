@@ -123,7 +123,7 @@
         <button onclick="closeSub('draw-m')" style="border:none; background:none; font-size:24px; margin-bottom:20px; cursor:pointer;"><i class="fas fa-arrow-left"></i> Geri</button>
         <div class="card">
             <h3>Çıxarış</h3>
-            <p>Min. 5.00 ₼ | Balans: <span id="m-bal">0.02</span> ₼</p>
+            <p>Min. 5.00 ₼ | Balans: <span id="m-bal">0.00</span> ₼</p>
             <div class="method-tabs">
                 <button id="m10-tab" class="method-btn active" onclick="setMethod('m10')">m10</button>
                 <button id="card-tab" class="method-btn" onclick="setMethod('card')">Kart</button>
@@ -157,7 +157,7 @@
     </nav>
 
     <script>
-        let balance = 0.02; 
+        let balance = 0.00; 
         let coins = 0; 
         let clickLimit = 1000;
         let lastSpin = localStorage.getItem('lastSpin') || 0;
