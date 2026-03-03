@@ -7,6 +7,9 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <script src="https://alwingulla.com/88/pfe/current/tag.min.js?z=8874632"></script>
+
     <style>
         :root { --bg: #e0f7fa; --primary: #00bcd4; --green: #4caf50; --dark: #37474f; --white: #ffffff; }
         body { margin: 0; font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--dark); overflow-x: hidden; }
@@ -53,7 +56,7 @@
                 <b style="color: var(--green); display: block; margin-top: 5px;">Bu gün nə qədər qazanacağını özün seç 👇</b>
             </div>
             <div style="background: #f0fdf4; color: var(--green); padding: 8px 15px; border-radius: 15px; font-weight: bold; margin-bottom: 15px; font-size: 14px;">🎁 Hər İzləmə: +<span id="ad-reward-display">0.03</span> ₼</div>
-            <button class="btn-main" style="background: #00897b;" onclick="watchAd()">REKLAM İZLƏ</button>
+            <button id="ad-btn" class="btn-main" style="background: #00897b;" onclick="watchAd()">REKLAM İZLƏ</button>
         </div>
 
         <div class="card" style="text-align: left; border: 1px solid #eee;">
@@ -67,8 +70,7 @@
         <div class="card" style="background: var(--green); color: white; margin-bottom: 10px;">
             <div style="font-size: 13px; opacity: 0.9; margin-bottom: 5px;">
                 🗓 Günlük limit: 1000 toxunuş<br>
-                💰 Qazanc: 1000 Coin = 0.10₼<br>
-                <small>(Sürətli toxun, balansını anında artır!)</small>
+                💰 Qazanc: 1000 Coin = 0.10₼
             </div>
             <div id="coin-val" style="font-size: 45px; font-weight: 900;">0</div>
             <p style="margin:0;">Limit: <span id="click-limit">1000</span> / 1000</p>
@@ -91,10 +93,9 @@
     <div id="ref-p" class="page">
         <div class="card" style="background: linear-gradient(135deg, var(--green), #00897b); color: white;">
             <h3 style="margin-bottom: 5px;">Dostunu gətir, 0.03₼ qazan. 🚀</h3>
-            <p style="font-size: 13px; opacity: 0.9;">Limitsiz dəvət, sonsuz qazanc imkanı!</p>
         </div>
         <div class="card">
-            <div id="ref-link-box" style="border:2px dashed var(--primary); padding:10px; border-radius:12px; font-size:11px; margin-bottom:15px; color:var(--primary); font-weight:bold; word-break: break-all;">https://t.me/Pulify_bot?start=5103173768</div>
+            <div id="ref-link-box" style="border:2px dashed var(--primary); padding:10px; border-radius:12px; font-size:11px; margin-bottom:15px; color:var(--primary); font-weight:bold; word-break: break-all;">Yüklənir...</div>
             <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
                 <a id="wa-btn" href="#" target="_blank" class="btn-main" style="background:#25D366; text-decoration:none;"><i class="fab fa-whatsapp"></i> WhatsApp</a>
                 <a id="tg-btn" href="#" target="_blank" class="btn-main" style="background:#0088cc; text-decoration:none;"><i class="fab fa-telegram-plane"></i> Telegram</a>
@@ -111,7 +112,7 @@
     <div id="prof-p" class="page">
         <div class="card" style="text-align:left; display:flex; align-items:center; gap:15px;">
             <div style="width:60px; height:60px; background:linear-gradient(45deg, #00bcd4, #4caf50); border-radius:50%;"></div>
-            <div><h3 style="margin:0">@User_3768</h3><p style="margin:0; font-size:12px; color:#999;">ID: 5103173768</p></div>
+            <div><h3 id="u-name">@User</h3><p id="u-id" style="margin:0; font-size:12px; color:#999;">ID: ---</p></div>
         </div>
         <button class="btn-main" style="background:var(--green); margin-bottom:15px;" onclick="openSub('draw-m')">Çıxarış Et</button>
         <button class="btn-main" style="background:var(--green); border: 3px solid var(--primary); margin-bottom: 15px;" onclick="openSub('promo-m')">Promokodu Aktivləşdir</button>
@@ -130,7 +131,7 @@
                 <button id="m10-tab" class="method-btn active" onclick="setMethod('m10')">m10</button>
                 <button id="card-tab" class="method-btn" onclick="setMethod('card')">Kart</button>
             </div>
-            <input type="number" id="pay-num" placeholder="Nömrə və ya Kart" style="width:100%; padding:15px; border:1px solid #ddd; border-radius:12px; box-sizing:border-box;">
+            <input type="number" id="pay-num" placeholder="Nömrə və ya Kart">
             <button id="draw-btn" class="btn-main" style="background:#ccc; margin-top:20px;" onclick="sendWithdraw()">Təsdiqlə</button>
         </div>
     </div>
@@ -165,6 +166,9 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
+        let userId = localStorage.getItem('userId') || "User_" + Math.floor(Math.random() * 9000 + 1000);
+        localStorage.setItem('userId', userId);
+
         let balance = parseFloat(localStorage.getItem('balance')) || 0;
         let coins = parseInt(localStorage.getItem('coins')) || 0;
         let refCount = parseInt(localStorage.getItem('refCount')) || 0;
@@ -177,6 +181,7 @@
         let lastSpin = localStorage.getItem('lastSpin') || 0;
         let lastTask = localStorage.getItem('lastTask') || 0;
 
+        // 🟠 ADMİN PANEL İLƏ ƏLAQƏ
         db.ref('settings').on('value', s => {
             const d = s.val();
             if(d) {
@@ -199,25 +204,6 @@
             }
         });
 
-        function startTimer(lastTime, duration, btnId, msgId, timerId) {
-            const btn = document.getElementById(btnId);
-            const msgBox = document.getElementById(msgId);
-            const timerText = document.getElementById(timerId);
-            const interval = setInterval(() => {
-                let timeLeft = duration - (Date.now() - lastTime);
-                if (timeLeft <= 0) {
-                    btn.disabled = false; btn.style.background = "var(--green)";
-                    msgBox.style.display = "none"; clearInterval(interval);
-                } else {
-                    btn.disabled = true; btn.style.background = "#ccc"; msgBox.style.display = "block";
-                    let h = Math.floor(timeLeft / 3600000);
-                    let m = Math.floor((timeLeft % 3600000) / 60000);
-                    let s = Math.floor((timeLeft % 60000) / 1000);
-                    timerText.innerText = (h<10?'0'+h:h)+":"+(m<10?'0'+m:m)+":"+(s<10?'0'+s:s);
-                }
-            }, 1000);
-        }
-
         function update() {
             document.getElementById('top-bal').innerText = balance.toFixed(2);
             document.getElementById('m-bal').innerText = balance.toFixed(2);
@@ -225,18 +211,53 @@
             document.getElementById('p-coin').innerText = coins;
             document.getElementById('click-limit').innerText = clickLimit;
             document.getElementById('ref-count').innerText = refCount;
+            document.getElementById('u-name').innerText = "@" + userId;
+            document.getElementById('u-id').innerText = "ID: " + userId.replace("User_","");
+            
             let dBtn = document.getElementById('draw-btn');
             dBtn.disabled = (balance < minWithdraw);
             dBtn.style.background = (balance >= minWithdraw) ? "var(--green)" : "#ccc";
+            
             localStorage.setItem('balance', balance);
             localStorage.setItem('coins', coins);
-            localStorage.setItem('refCount', refCount);
-            checkSpinLimit(); checkTaskLimit();
+            
+            // Firebase-də istifadəçini yenilə (Admin panel üçün)
+            db.ref('users/' + userId).update({ balance: balance, coins: coins, lastActive: Date.now() });
         }
 
+        // 🟢 REAL REKLAM FUNKSİYASI
         function watchAd() {
-            alert("Reklam yüklənir...");
-            setTimeout(() => { balance += adReward; update(); alert("Qazandınız: +" + adReward + " ₼"); }, 2000);
+            alert("Reklam yüklənir, xahiş edirik gözləyin...");
+            
+            // Monetag funksiyasını çağırırıq (Zone ID: 8874632)
+            if (typeof show_8874632 === 'function') {
+                show_8874632().then(() => {
+                    awardUser(); // Reklam uğurla bitdi
+                }).catch(() => {
+                    alert("Reklam hazır deyil. Bir az sonra yenidən yoxlayın.");
+                });
+            } else {
+                // Əgər ID hələ aktiv deyilsə (Test rejimi)
+                setTimeout(awardUser, 3000);
+            }
+        }
+
+        function awardUser() {
+            balance += adReward;
+            update();
+
+            // ADMİN PANEL STATİSTİKASINI YENİLƏ
+            const adStatRef = db.ref('stats/ads');
+            adStatRef.transaction((current) => {
+                if (current === null) current = { count: 0, revenue: 0, viewers: {} };
+                current.count += 1;
+                current.revenue = (current.revenue || 0) + adReward;
+                if (!current.viewers) current.viewers = {};
+                current.viewers[userId] = true;
+                return current;
+            });
+
+            alert("Təbriklər! Balansınıza " + adReward + " ₼ əlavə olundu.");
         }
 
         function doClick() {
@@ -244,7 +265,7 @@
                 coins++; clickLimit--; update();
                 let d = document.getElementById('main-diamond');
                 d.style.transform = "scale(0.9)"; setTimeout(() => d.style.transform = "scale(1)", 80);
-            } else alert("Limit doldu!");
+            } else alert("Gündəlik limit doldu!");
         }
 
         function runSpin() {
@@ -253,7 +274,8 @@
             setTimeout(() => {
                 balance += spinReward; lastSpin = Date.now();
                 localStorage.setItem('lastSpin', lastSpin); update();
-                alert("Təbrik! +" + spinReward + " ₼");
+                alert("Çarxdan qazandınız: +" + spinReward + " ₼");
+                document.getElementById('main-wheel').style.transform = "rotate(0deg)";
             }, 4000);
         }
 
@@ -265,11 +287,28 @@
 
         function sendWithdraw() {
             const num = document.getElementById('pay-num').value;
-            if(num.length < 8) return alert("Düzgün məlumat yazın!");
-            db.ref('payouts').push({ number: num, amount: balance.toFixed(2), method: currentMethod, time: Date.now() })
-            .then(() => { balance = 0; update(); alert("Sorğu göndərildi!"); closeSub('draw-m'); });
+            if(num.length < 8) return alert("Nömrəni düzgün daxil edin!");
+            db.ref('payouts').push({ id: userId, num: num, amt: balance.toFixed(2), method: currentMethod, time: Date.now() })
+            .then(() => { balance = 0; update(); alert("Çıxarış sorğusu göndərildi! ✅"); closeSub('draw-m'); });
         }
 
+        function convertCoins() {
+            if(coins < 1000) return alert("Minimum 1000 Coin olmalıdır!");
+            balance += 0.10; coins -= 1000; update();
+            alert("1000 Coin -> 0.10 ₼ balansınıza köçürüldü!");
+        }
+
+        function activatePromo() {
+            const code = document.getElementById('promo-input').value;
+            db.ref('settings/promoCode').once('value', s => {
+                if(s.val() === code && code !== "") {
+                    balance += 0.50; update(); alert("Promokod aktiv oldu! +0.50 ₼");
+                    document.getElementById('promo-input').value = ""; closeSub('promo-m');
+                } else alert("Kod yanlışdır!");
+            });
+        }
+
+        // NAVIGATION & UTILS
         function nav(id, el) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page'));
             document.getElementById(id).classList.add('active-page');
@@ -283,33 +322,17 @@
             document.getElementById('m10-tab').classList.toggle('active', m==='m10');
             document.getElementById('card-tab').classList.toggle('active', m==='card');
         }
-
-        function checkSpinLimit() {
-            if (Date.now() - lastSpin < 86400000) startTimer(lastSpin, 86400000, 'spin-btn', 'spin-timer', 'time-left');
-            else { document.getElementById('spin-btn').disabled = false; document.getElementById('spin-timer').style.display = 'none'; }
-        }
-
-        function checkTaskLimit() {
-            if (Date.now() - lastTask < 86400000) startTimer(lastTask, 86400000, 'task-btn', 'task-timer-msg', 'task-time-left');
-            else { document.getElementById('task-btn').disabled = false; document.getElementById('task-timer-msg').style.display = 'none'; }
-        }
-
-        function convertCoins() {
-            if(coins < 1000) return alert("Min. 1000 coin!");
-            balance += 0.10; coins -= 1000; update();
-        }
-        
         function copyLink() {
             navigator.clipboard.writeText(document.getElementById('ref-link-box').innerText);
-            alert("Kopyalandı!");
+            alert("Link kopyalandı! Dostlarına göndər.");
         }
 
         window.onload = function() {
             update();
-            let userId = "5103173768"; 
-            let myUrl = "https://t.me/Pulify_bot?start=" + userId;
-            let text = "Hər dəvətə 0.03 ₼ qazan! 🔥 Pulify-a qoşul, birlikdə real pul qazanaq. 💸";
-            document.getElementById('wa-btn').href = "https://api.whatsapp.com/send?text=" + encodeURIComponent(text + "\n" + myUrl);
+            let myUrl = "https://mir1996.github.io/pulify?ref=" + userId;
+            document.getElementById('ref-link-box').innerText = myUrl;
+            let text = "Pulify-da reklam izləyərək real pul qazan! 💸 Sən də qoşul: ";
+            document.getElementById('wa-btn').href = "https://api.whatsapp.com/send?text=" + encodeURIComponent(text + myUrl);
             document.getElementById('tg-btn').href = "https://t.me/share/url?url=" + encodeURIComponent(myUrl) + "&text=" + encodeURIComponent(text);
         }
     </script>
