@@ -3,9 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>PULIFY FINAL MASTER</title>
-
+    
     <meta name="monetag" content="7ff2cf80bb9e8c55a13cff99a87d4c3f">
+
+    <title>PULIFY FINAL MASTER</title>
 
     <script src="https://alwingulla.com/88/pfe/current/tag.min.js?z=8874632"></script>
 
@@ -239,18 +240,16 @@
             checkSpinLimit(); checkTaskLimit();
         }
 
-        // 3. REKLAM FUNKSİYASI (MONETAG ÜÇÜN AKTİVLƏŞDİRİLDİ)
         function watchAd() {
             if (typeof show_8874632 === 'function') {
                 show_8874632().then(() => {
-                    balance += adReward;
-                    update();
+                    balance += adReward; update();
                     alert("Təbrik! +" + adReward + " ₼ qazandınız.");
                 }).catch(() => {
-                    alert("Reklam hazır deyil, bir neçə saniyə sonra yenidən yoxlayın.");
+                    alert("Reklam hələ hazır deyil.");
                 });
             } else {
-                alert("Reklam sistemi yüklənir... Zəhmət olmasa gözləyin.");
+                alert("Reklam yüklənir...");
             }
         }
 
