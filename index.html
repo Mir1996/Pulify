@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>PULIFY FINAL MASTER</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root { --bg: #e0f7fa; --primary: #00bcd4; --green: #4caf50; --dark: #37474f; --white: #ffffff; }
+        body { margin: 0; font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--dark); overflow-x: hidden; }
+        
+        .page { display: none; padding: 20px 20px 140px 20px; flex-direction: column; align-items: center; min-height: 100vh; box-sizing: border-box; }
+        .active-page { display: flex; animation: fadeIn 0.3s; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        /* Header */
+        .app-header { width: 100%; display: flex; justify-content: space-between; align-items: center; padding: 10px 20px; position: sticky; top: 0; background: var(--bg); z-index: 1000; box-sizing: border-box; }
+        .wallet-badge { background: var(--white); padding: 8px 15px; border-radius: 12px; font-weight: 800; color: #00796b; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+
+        /* Cards & Buttons */
+        .card { width: 100%; background: var(--white); border-radius: 25px; padding: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); margin-bottom: 15px; text-align: center; box-sizing: border-box; }
+        .btn-main { border: none; border-radius: 18px; padding: 15px; color: white; font-weight: bold; cursor: pointer; width: 100%; font-size: 16px; transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; }
+        .btn-main:active { transform: scale(0.98); }
+
+        /* Navbar */
+        .nav-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: var(--green); display: flex; justify-content: space-around; padding: 15px 0; border-radius: 25px 25px 0 0; box-shadow: 0 -5px 20px rgba(0,0,0,0.1); z-index: 1500; }
+        .nav-link { color: rgba(255,255,255,0.6); font-size: 11px; display: flex; flex-direction: column; align-items: center; gap: 5px; cursor: pointer; flex: 1; text-decoration: none; transition: 0.3s; }
+        .nav-link i { font-size: 26px; }
+        .nav-link.active { color: white; font-weight: bold; transform: translateY(-3px); }
+
+        /* Metod Seçimi */
+        .method-tabs { display: flex; gap: 10px; margin-bottom: 20px; }
+        .method-btn { flex: 1; padding: 12px; border-radius: 12px; border: 1px solid #ddd; background: white; cursor: pointer; font-weight: bold; }
+        .method-btn.active { background: var(--green); color: white; border-color: var(--green); }
+
+        /* Modallar */
+        .sub-layer { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg); z-index: 2000; display: none; flex-direction: column; padding: 20px; box-sizing: border-box; overflow-y: auto; }
+    </style>
+</head>
+<body>
+
+    <div class="app-header">
+        <div style="font-weight: 900; color: var(--green); font-size: 22px;">PULIFY</div>
+        <div class="wallet-badge"><i class="fas fa-wallet"></i> <span id="top-bal">0.02</span> ₼</div>
+    </div>
+
+    <div id="home-p" class="page active-page">
+        <div class="card" style="background: var(--green); color: white; text-align: left;">
+            <h3 style="margin:0 0 10px 0;">Mühüm Bildiriş 📢</h3>
+            <p style="font-size: 13px; margin:0;">Dəyərli istifadəçilər, reklam izləmək sistemin davamlılığına kömək edir. Qazanc anında balansa köçür.</p>
+        </div>
+        
+        <div class="card">
+            <div style="background: #f0fdf4; color: var(--green); padding: 8px 15px; border-radius: 15px; font-weight: bold; margin-bottom: 15px; font-size: 14px;">🎁 Hər İzləmə: +0.03 ₼</div>
+            <button class="btn-main" style="background: #00897b;" onclick="watchAd()">REKLAM İZLƏ</button>
+        </div>
+
+        <div class="card" style="text-align: left; border: 1px solid #eee;">
+            <h4 style="margin:0 0 10px 0; border-left: 4px solid var(--green); padding-left: 10px;">Gündəlik Tapşırıq (72 Saat)</h4>
+            <a id="task-btn" href="https://referral.sandiq.app/ref/TREND030" target="_blank" onclick="completeTask(event)" class="btn-main" style="background: var(--green); text-decoration: none;">Görevı tamamla - 0.05 ₼</a>
+            
+            <div style="margin-top: 12px; font-size: 12px; background: #f9f9f9; padding: 10px; border-radius: 12px; line-height: 1.5;">
+                <b style="color:red;">Çeki atma ❌</b><br>
+                Sandıq-da skan et → pul və hədiyyə qazan 🎁<br>
+                🔗 https://referral.sandiq.app/ref/TREND030<br>
+                <b>📋 Kod: TREND030</b>
+            </div>
+            <div id="task-timer-msg" style="display:none; color: red; font-weight: bold; margin-top: 10px; font-size: 11px; text-align: center;">Növbəti haqqınız 72 saat sonra açılacaq.</div>
+        </div>
+    </div>
+
+    <div id="click-p" class="page">
+        <div class="card" style="background: var(--green); color: white;">
+            <h3>Coin Topla 👆</h3>
+            <div id="coin-val" style="font-size: 45px; font-weight: 900;">0</div>
+            <p>Gündəlik Limit: <span id="click-limit">1000</span> / 1000</p>
+        </div>
+        <div onclick="doClick()" id="main-diamond" style="width: 210px; height: 210px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 80px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); cursor: pointer; transition: 0.1s; user-select: none;">💎</div>
+    </div>
+
+    <div id="spin-p" class="page">
+        <div style="position: relative; width: 260px; height: 260px; margin-bottom: 30px;">
+            <div style="position: absolute; top: -10px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 15px solid transparent; border-right: 15px solid transparent; border-top: 25px solid #f44336; z-index: 10;"></div>
+            <div id="main-wheel" style="width: 100%; height: 100%; border-radius: 50%; border: 8px solid #ffd54f; transition: 4s cubic-bezier(0.15, 0, 0.15, 1); background: conic-gradient(#4db6ac 0 45deg, #80deea 45deg 90deg, #4db6ac 90deg 135deg, #80deea 135deg 180deg, #4db6ac 180deg 225deg, #80deea 225deg 270deg, #4db6ac 270deg 315deg, #80deea 315deg 360deg);"></div>
+        </div>
+        <div class="card">
+            <button id="spin-btn" class="btn-main" style="background: var(--green);" onclick="runSpin()">Çarxı Çevir</button>
+            <p id="spin-msg" style="margin-top: 15px; font-size: 13px; font-weight: bold;">Gündə 1 dəfə daxil ol və 0.03 ₼ qazan! 🎁</p>
+            <div id="spin-timer" style="display:none; color: red; font-weight: bold; margin-top: 10px;">Növbəti şans: <span id="time-left">24:00:00</span></div>
+        </div>
+    </div>
+
+    <div id="ref-p" class="page">
+        <div style="display:flex; gap:10px; width:100%; margin-bottom:15px;">
+            <div class="card" style="background:var(--primary); color:white; flex:1; margin:0; padding:15px;">0<br><small>Dəvət</small></div>
+            <div class="card" style="background:var(--green); color:white; flex:1; margin:0; padding:15px;">0.00 ₼<br><small>Qazanc</small></div>
+        </div>
+        <div class="card">
+            <h3>Dostlarını Dəvət Et! 🚀</h3>
+            <div id="ref-link-box" style="border:2px dashed var(--primary); padding:10px; border-radius:12px; font-size:11px; margin-bottom:15px; color:var(--primary); font-weight:bold; word-break: break-all;">https://t.me/Pulify_bot?start=5103173768</div>
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+                <a id="wa-btn" href="#" target="_blank" class="btn-main" style="background:#25D366; text-decoration:none;"><i class="fab fa-whatsapp"></i> WhatsApp</a>
+                <a id="tg-btn" href="#" target="_blank" class="btn-main" style="background:#0088cc; text-decoration:none;"><i class="fab fa-telegram-plane"></i> Telegram</a>
+            </div>
+            <button class="btn-main" style="background:#333; margin-top:10px;" onclick="copyLink()"><i class="fas fa-copy"></i> Linki Kopyala</button>
+        </div>
+    </div>
+
+    <div id="prof-p" class="page">
+        <div class="card" style="text-align:left; display:flex; align-items:center; gap:15px;">
+            <div style="width:60px; height:60px; background:linear-gradient(45deg, #00bcd4, #4caf50); border-radius:50%;"></div>
+            <div><h3 style="margin:0">@User_3768</h3><p style="margin:0; font-size:12px; color:#999;">ID: 5103173768</p></div>
+        </div>
+        <button class="btn-main" style="background:var(--green); margin-bottom:15px;" onclick="openSub('draw-m')">Çıxarış Et</button>
+        <button class="btn-main" style="background:var(--green); border: 3px solid var(--primary); margin-bottom: 15px;" onclick="openSub('promo-m')">Promokodu Aktivləşdir</button>
+        <div class="card" style="display:flex; justify-content:space-between; align-items:center;">
+            <span>Coin: <b id="p-coin">0</b></span>
+            <button onclick="convertCoins()" style="background:var(--primary); color:white; border:none; padding:8px 15px; border-radius:10px; font-weight:bold;">Çevir</button>
+        </div>
+    </div>
+
+    <div id="draw-m" class="sub-layer">
+        <button onclick="closeSub('draw-m')" style="border:none; background:none; font-size:24px; margin-bottom:20px; cursor:pointer;"><i class="fas fa-arrow-left"></i> Geri</button>
+        <div class="card">
+            <h3>Çıxarış</h3>
+            <p>Min. 5.00 ₼ | Balans: <span id="m-bal">0.02</span> ₼</p>
+            <div class="method-tabs">
+                <button id="m10-tab" class="method-btn active" onclick="setMethod('m10')">m10</button>
+                <button id="card-tab" class="method-btn" onclick="setMethod('card')">Kart</button>
+            </div>
+            <div id="m10-input" style="display:flex; align-items:center; background:#f5f5f5; border-radius:12px; padding:0 15px;">
+                <b>+994</b> <input type="number" id="m10-num" placeholder="500000000" style="flex:1; border:none; background:none; padding:15px; outline:none; font-size:16px;">
+            </div>
+            <div id="card-input" style="display:none;">
+                <input type="number" id="card-num" placeholder="16 rəqəmli kart nömrəsi" style="width:100%; padding:15px; border:1px solid #ddd; border-radius:12px; box-sizing:border-box;">
+            </div>
+            <button id="draw-btn" class="btn-main" style="background:#ccc; margin-top:20px;" disabled onclick="sendWithdraw()">Təsdiqlə</button>
+        </div>
+    </div>
+
+    <div id="promo-m" class="sub-layer">
+        <button onclick="closeSub('promo-m')" style="border:none; background:none; font-size:24px; margin-bottom:20px; cursor:pointer;"><i class="fas fa-arrow-left"></i> Geri</button>
+        <div class="card">
+            <i class="fas fa-gift" style="font-size:50px; color:var(--primary); margin-bottom:15px;"></i>
+            <h3>Promokod Daxil Et</h3>
+            <input type="text" placeholder="Kodu yazın" style="width:100%; padding:15px; border:1px solid #ddd; border-radius:15px; margin-bottom:20px; text-align:center; font-weight:bold; font-size:18px;">
+            <button class="btn-main" style="background:var(--green)">Aktivləşdir</button>
+        </div>
+    </div>
+
+    <nav class="nav-bar">
+        <div class="nav-link active" onclick="nav('home-p', this)"><i class="fas fa-home"></i>Ev</div>
+        <div class="nav-link" onclick="nav('click-p', this)"><i class="fas fa-hand-pointer"></i>Tıkla</div>
+        <div class="nav-link" onclick="nav('spin-p', this)"><i class="fas fa-dharmachakra"></i>Çarx</div>
+        <div class="nav-link" onclick="nav('ref-p', this)"><i class="fas fa-user-plus"></i>Ref</div>
+        <div class="nav-link" onclick="nav('prof-p', this)"><i class="fas fa-user-circle"></i>Profil</div>
+    </nav>
+
+    <script>
+        let balance = 0.02; 
+        let coins = 0; 
+        let clickLimit = 1000;
+        let lastSpin = localStorage.getItem('lastSpin') || 0;
+        let lastTask = localStorage.getItem('lastTask') || 0; // 72 saat üçün
+        let spinTimerInterval;
+
+        function update() {
+            document.getElementById('top-bal').innerText = balance.toFixed(2);
+            document.getElementById('m-bal').innerText = balance.toFixed(2);
+            document.getElementById('coin-val').innerText = coins;
+            document.getElementById('p-coin').innerText = coins;
+            document.getElementById('click-limit').innerText = clickLimit;
+            
+            let drawBtn = document.getElementById('draw-btn');
+            drawBtn.disabled = (balance < 5);
+            drawBtn.style.background = (balance >= 5) ? "var(--green)" : "#ccc";
+            
+            checkSpinLimit();
+            checkTaskLimit(); // Task limitini yoxla
+        }
+
+        function nav(id, el) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page'));
+            document.getElementById(id).classList.add('active-page');
+            document.querySelectorAll('.nav-link').forEach(n => n.classList.remove('active'));
+            el.classList.add('active');
+        }
+
+        // --- 72 SAATLIQ TAPŞIRIQ MƏNTİQİ ---
+        function completeTask(event) {
+            let now = new Date().getTime();
+            let limit72h = 72 * 60 * 60 * 1000;
+
+            if (now - lastTask < limit72h) {
+                event.preventDefault();
+                alert("Bu tapşırığı artıq etmisiniz. Növbəti haqqınız 3 gün sonradır!");
+                return;
+            }
+
+            balance += 0.05;
+            lastTask = now;
+            localStorage.setItem('lastTask', lastTask);
+            update();
+            alert("Təbrik! +0.05 ₼ balansınıza əlavə edildi.");
+        }
+
+        function checkTaskLimit() {
+            let now = new Date().getTime();
+            let limit72h = 72 * 60 * 60 * 1000;
+            let btn = document.getElementById('task-btn');
+            let msg = document.getElementById('task-timer-msg');
+
+            if (now - lastTask < limit72h) {
+                btn.style.background = "#ccc";
+                btn.innerText = "İcra edildi (72h)";
+                msg.style.display = "block";
+            } else {
+                btn.style.background = "var(--green)";
+                btn.innerText = "Görevı tamamla - 0.05 ₼";
+                msg.style.display = "none";
+            }
+        }
+
+        function doClick() {
+            if(clickLimit > 0) {
+                coins++; clickLimit--; update();
+                let d = document.getElementById('main-diamond');
+                d.style.transform = "scale(0.9) rotate(5deg)";
+                setTimeout(() => d.style.transform = "scale(1) rotate(0deg)", 80);
+            } else alert("Gündəlik limit doldu!");
+        }
+
+        function watchAd() {
+            alert("Reklam yüklənir...");
+            setTimeout(() => { balance += 0.03; update(); alert("Qazandınız: +0.03 ₼"); }, 2000);
+        }
+
+        function runSpin() {
+            let now = new Date().getTime();
+            if (now - lastSpin < 24 * 60 * 60 * 1000) return;
+            const wheel = document.getElementById('main-wheel');
+            const btn = document.getElementById('spin-btn');
+            btn.disabled = true;
+            wheel.style.transform = "rotate(3600deg)";
+            setTimeout(() => {
+                balance += 0.03;
+                lastSpin = new Date().getTime();
+                localStorage.setItem('lastSpin', lastSpin);
+                update();
+                alert("Təbriklər! +0.03 ₼ qazandınız! 🎉");
+            }, 4000);
+        }
+
+        function checkSpinLimit() {
+            let now = new Date().getTime();
+            let diff = now - lastSpin;
+            let day = 24 * 60 * 60 * 1000;
+            let btn = document.getElementById('spin-btn');
+            let timerDiv = document.getElementById('spin-timer');
+            let msg = document.getElementById('spin-msg');
+            if (diff < day) {
+                btn.disabled = true;
+                btn.style.background = "#ccc";
+                timerDiv.style.display = 'block';
+                msg.innerText = "Bu günlük şansınız bitdi.";
+                if(spinTimerInterval) clearInterval(spinTimerInterval);
+                spinTimerInterval = setInterval(() => {
+                    let currentNow = new Date().getTime();
+                    let remaining = day - (currentNow - lastSpin);
+                    if(remaining <= 0) {
+                        clearInterval(spinTimerInterval);
+                        update();
+                    } else {
+                        let h = Math.floor(remaining / 3600000);
+                        let m = Math.floor((remaining % 3600000) / 60000);
+                        let s = Math.floor((remaining % 60000) / 1000);
+                        document.getElementById('time-left').innerText = `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+                    }
+                }, 1000);
+            } else {
+                btn.disabled = false;
+                btn.style.background = "var(--green)";
+                timerDiv.style.display = 'none';
+                msg.innerText = "Gündə 1 dəfə daxil ol və 0.03 ₼ qazan! 🎁";
+                if(spinTimerInterval) clearInterval(spinTimerInterval);
+            }
+        }
+
+        function setupShareLinks() {
+            let myUrl = "https://t.me/Pulify_bot?start=5103173768";
+            let text = "Salam! 👋 Pulify ilə reklam izləyərək gündəlik pul qazanıram. Sən də qoşul! 🚀 Link: " + myUrl;
+            document.getElementById('wa-btn').href = "https://api.whatsapp.com/send?text=" + encodeURIComponent(text);
+            document.getElementById('tg-btn').href = "https://t.me/share/url?url=" + encodeURIComponent(myUrl) + "&text=" + encodeURIComponent(text);
+        }
+
+        function copyLink() {
+            navigator.clipboard.writeText(document.getElementById('ref-link-box').innerText);
+            alert("Referal link kopyalandı!");
+        }
+
+        function setMethod(m) {
+            document.getElementById('m10-tab').classList.toggle('active', m==='m10');
+            document.getElementById('card-tab').classList.toggle('active', m==='card');
+            document.getElementById('m10-input').style.display = (m==='m10') ? 'flex' : 'none';
+            document.getElementById('card-input').style.display = (m==='card') ? 'block' : 'none';
+        }
+
+        function openSub(id) { document.getElementById(id).style.display = 'flex'; }
+        function closeSub(id) { document.getElementById(id).style.display = 'none'; }
+        
+        function convertCoins() {
+            if(coins < 1000) return alert("Min. 1000 coin lazımdır!");
+            balance += 0.10; coins -= 1000; update();
+        }
+
+        function sendWithdraw() { alert("Çıxarış sorğusu göndərildi!"); }
+
+        window.onload = function() {
+            setupShareLinks();
+            update();
+        }
+    </script>
+</body>
+</html>
