@@ -49,7 +49,7 @@
     <div id="ad-modal">
         <div class="modal-content">
             <h3 style="margin-top:0; color: var(--dark);">Reklam İzlənir</h3>
-            <p style="font-size:13px; color:#666; margin-bottom: 5px;">Reklam pəncərəsini bağlamayın. 15 saniyə bitəndə düymə açılacaq.</p>
+            <p style="font-size:13px; color:#666; margin-bottom: 5px;">Reklam pəncərəsini bağlamayın.</p>
             <span id="ad-timer">15</span>
             <p id="ad-status" style="font-weight:bold; color:#00897b;">Gözləyin...</p>
             
@@ -75,7 +75,7 @@
         <div class="card">
             <div style="margin-bottom: 15px; font-size: 14px; line-height: 1.6;">
                 <b style="color: var(--dark); display: block; margin-bottom: 5px;">💸 Pulify ilə gündəlik passiv qazanc əldə et!</b>
-                <span style="color: #666;">Sadəcə reklamı sona qədər izlə,<br>və balansını dərhal artır.</span><br>
+                <span style="color: #666;">Reklamı sona qədər izlə və balansını artır.</span><br>
                 <b style="color: var(--green); display: block; margin-top: 5px;">Bu gün nə qədər qazanacağını özün seç 👇</b>
             </div>
             <div style="background: #f0fdf4; color: var(--green); padding: 8px 15px; border-radius: 15px; font-weight: bold; margin-bottom: 15px; font-size: 14px;">🎁 Hər İzləmə: +<span id="ad-reward-display">0.03</span> ₼</div>
@@ -252,19 +252,19 @@
             checkSpinLimit(); checkTaskLimit();
         }
 
-        // --- YALNIZ BU FUNKSİYA MONETAG ÜÇÜN DÜZƏLDİLDİ ---
+        // --- BU HİSSƏDƏ REKLAM SİSTEMİ DÜZƏLDİLDİ ---
         function watchAd() {
             if (typeof show_10681243 === 'function') {
                 show_10681243().then(() => {
-                    // Bu hissə ancaq reklam bitəndə (və ya X basılanda) işləyir
+                    // Reklam bitəndə işləyən kod
                     balance += adReward;
                     update();
-                    alert("Təbrik! Reklamı izlədiyiniz üçün " + adReward + " ₼ balansınıza əlavə edildi.");
+                    alert("Təbrik! +" + adReward + " ₼ balansınıza əlavə edildi.");
                 }).catch(err => {
-                    alert("Reklam tam izlənilmədi. Pul qazanmaq üçün sona qədər baxmalısınız.");
+                    alert("Reklam tam izlənilmədi.");
                 });
             } else {
-                alert("Reklam sistemi yüklənir, bir azdan yenidən yoxlayın.");
+                alert("Reklam yüklənir, bir az gözləyin...");
             }
         }
 
