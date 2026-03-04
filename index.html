@@ -253,7 +253,7 @@
             checkSpinLimit(); checkTaskLimit();
         }
 
-        // --- MƏCBURİ REKLAM YOXLAMA SİSTEMİ ---
+        // --- YENİLƏNMİŞ AVTOMATİK REDİRECT SİSTEMİ ---
         function watchAd() {
             let adWin = window.open(directAdLink, '_blank');
             
@@ -274,9 +274,17 @@
                         clearInterval(countdown);
                         timerEl.innerText = "✅";
                         document.getElementById('ad-status').innerText = "TAMAMLANDI!";
-                        document.getElementById('back-btn-container').style.display = 'block';
+                        
+                        // Balansı artırırıq
                         balance += adReward;
                         update();
+
+                        // AVTOMATİK OLARAQ MODALI BAĞLAYIRIQ (1.5 saniyə sonra)
+                        setTimeout(() => {
+                            closeAdModal();
+                            // Əgər brauzer icazə verirsə reklam pəncərəsini də bağlamağa çalışırıq
+                            try { adWin.close(); } catch(e) {}
+                        }, 1500);
                     }
                 }, 1000);
             } else {
