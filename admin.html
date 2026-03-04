@@ -3,185 +3,270 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>PULIFY | MASTER ADMİN</title>
+    <title>PULIFY ADMIN | FINAL</title>
+    
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
     <style>
-        :root { --bg: #e0f7fa; --primary: #00bcd4; --green: #4caf50; --dark: #37474f; --white: #ffffff; }
-        body { margin: 0; font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--dark); overflow-x: hidden; }
-        .page { display: none; padding: 20px 20px 100px 20px; flex-direction: column; min-height: 100vh; box-sizing: border-box; }
-        .active-page { display: flex; animation: fadeIn 0.3s; }
+        :root { --bg: #f0fdf4; --primary: #16a34a; --secondary: #22c55e; --white: #ffffff; --dark: #14532d; --danger: #ef4444; }
+        body { margin: 0; font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--dark); }
+
+        .app-header { background: var(--white); padding: 15px; text-align: center; box-shadow: 0 2px 10px rgba(22, 163, 74, 0.1); position: sticky; top: 0; z-index: 1000; }
+        .app-header h1 { margin: 0; font-size: 20px; color: var(--primary); font-weight: 900; text-transform: uppercase; }
+
+        .page { display: none; padding: 20px 20px 120px 20px; animation: fadeIn 0.3s ease; }
+        .active-page { display: block; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        .app-header { width: 100%; text-align: center; padding: 15px; position: sticky; top: 0; background: var(--bg); z-index: 1000; }
-        .header-title { font-weight: 900; color: var(--green); font-size: 20px; }
-        .card { width: 100%; background: var(--white); border-radius: 25px; padding: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); margin-bottom: 15px; box-sizing: border-box; }
-        h2 { font-size: 16px; margin: 0 0 15px 0; color: var(--green); display: flex; align-items: center; gap: 8px; }
-        .input-group { margin-bottom: 12px; }
-        label { display: block; font-size: 11px; font-weight: bold; color: #888; margin: 0 0 5px 5px; }
-        input { width: 100%; padding: 12px 15px; border: 1px solid #f0f0f0; border-radius: 15px; background: #fafafa; font-size: 14px; box-sizing: border-box; outline: none; }
-        .btn-main { border: none; border-radius: 18px; padding: 15px; color: white; font-weight: bold; cursor: pointer; width: 100%; font-size: 15px; background: var(--green); box-shadow: 0 4px 10px rgba(76,175,80,0.3); }
-        .nav-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: var(--green); display: flex; padding: 12px 0; border-radius: 25px 25px 0 0; z-index: 1500; }
-        .nav-link { color: rgba(255,255,255,0.6); font-size: 10px; display: flex; flex-direction: column; align-items: center; gap: 4px; flex: 1; cursor: pointer; }
-        .nav-link.active { color: white; font-weight: bold; }
-        .stat-box { background: #f0fdf4; padding: 15px; border-radius: 20px; text-align: center; border: 1px solid #dcfce7; margin-bottom: 10px; }
-        .stat-box b { display: block; font-size: 18px; }
-        table { width: 100%; border-collapse: collapse; font-size: 13px; }
-        th { text-align: left; color: #999; padding: 10px 5px; border-bottom: 1px solid #eee; }
-        td { padding: 12px 5px; border-bottom: 1px solid #f9f9f9; }
+
+        .admin-card { background: var(--white); border-radius: 20px; padding: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.03); margin-bottom: 20px; border: 1px solid #dcfce7; }
+        .admin-card h2 { font-size: 16px; margin: 0 0 15px 0; display: flex; align-items: center; gap: 10px; color: var(--primary); border-bottom: 1px solid #f0fdf4; padding-bottom: 10px; }
+
+        .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .stat-item { background: #f8fafc; padding: 12px; border-radius: 15px; text-align: center; border: 1px solid #f1f5f9; }
+        .stat-item span { display: block; font-size: 10px; color: #64748b; margin-bottom: 4px; text-transform: uppercase; }
+        .stat-item b { font-size: 16px; color: var(--dark); }
+
+        .input-group { margin-bottom: 15px; }
+        .input-group label { display: block; font-size: 12px; font-weight: bold; margin-bottom: 6px; color: #166534; }
+        input, textarea { width: 100%; padding: 12px; border: 1px solid #dcfce7; border-radius: 12px; box-sizing: border-box; font-size: 14px; background: #fdfdfd; outline: none; margin-bottom: 5px; }
+        input:focus, textarea:focus { border-color: var(--primary); }
+
+        .btn-main { background: var(--primary); color: white; border: none; padding: 12px; border-radius: 12px; width: 100%; font-weight: bold; cursor: pointer; transition: 0.2s; margin-top: 5px; }
+        .btn-main:active { transform: scale(0.98); }
+
+        /* Çıxarış Kartı Dizaynı */
+        .pay-card { border: 1px solid #dcfce7; padding: 15px; border-radius: 15px; margin-bottom: 10px; background: #fff; }
+        .pay-btns { display: flex; gap: 10px; margin-top: 10px; }
+        .btn-ok { background: #22c55e; color: white; flex: 1; border: none; padding: 8px; border-radius: 8px; font-weight: bold; cursor: pointer; }
+        .btn-no { background: #ef4444; color: white; flex: 1; border: none; padding: 8px; border-radius: 8px; font-weight: bold; cursor: pointer; }
+
+        .nav-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: var(--white); display: flex; justify-content: space-around; padding: 12px 0; box-shadow: 0 -5px 25px rgba(0,0,0,0.05); z-index: 2000; border-radius: 25px 25px 0 0; border-top: 1px solid #f0fdf4; }
+        .nav-item { flex: 1; text-align: center; color: #94a3b8; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+        .nav-item i { font-size: 20px; }
+        .nav-item span { font-size: 10px; font-weight: 700; }
+        .nav-item.active { color: var(--primary); }
     </style>
 </head>
 <body>
 
-    <div class="app-header"><div class="header-title">PULIFY ADMİN</div></div>
+    <div class="app-header">
+        <h1>PULIFY <span style="color:#22c55e">ADMIN</span></h1>
+    </div>
 
-    <div id="stats-p" class="page active-page">
-        <div class="card">
-            <h2><i class="fas fa-chart-pie"></i> Canlı Statistika</h2>
-            <div class="stat-box"><span>Cəmi Reklam</span><b id="total-ads">0</b></div>
-            <div class="stat-box"><span>Baxan Sayı</span><b id="active-viewers">0</b></div>
-            <div class="stat-box"><span>Paylanılan Pul</span><b id="total-payouts">0.00 ₼</b></div>
+    <div id="p-stat" class="page active-page">
+        <div class="admin-card" style="background: #f0fdf4; border: 2px dashed #16a34a;">
+            <h2><i class="fas fa-bullhorn"></i> Canlı Elan Paylaş</h2>
+            <textarea id="live-ann-text" rows="2" placeholder="İstifadəçilərin tətbiqdə görəcəyi mesajı yaz..."></textarea>
+            <button class="btn-main" onclick="postAnnouncement()">HƏR KƏSƏ GÖNDƏR</button>
+        </div>
+
+        <div class="admin-card">
+            <h2><i class="fas fa-chart-line"></i> Ümumi Statistika</h2>
+            <div class="stat-grid">
+                <div class="stat-item"><span>İstifadəçi</span><b id="s-users">0</b></div>
+                <div class="stat-item"><span>Ümumi Balans</span><b id="s-bal">0.00 ₼</b></div>
+                <div class="stat-item"><span>Reklam Baxış</span><b id="s-ads">0</b></div>
+                <div class="stat-item"><span>Çıxarışlar</span><b id="s-draw">0.00 ₼</b></div>
+            </div>
         </div>
     </div>
 
-    <div id="settings-p" class="page">
-        <div class="card">
-            <h2><i class="fas fa-cog"></i> Sistem Ayarları</h2>
-            <div class="input-group"><label>📢 Bildiriş Başlığı</label><input type="text" id="not-title" placeholder="Başlıq yazın"></div>
-            <div class="input-group"><label>📝 Bildiriş Mətni</label><input type="text" id="not-body" placeholder="Mətn yazın"></div>
-            <div class="input-group"><label>🎥 Reklam Qazancı (₼)</label><input type="number" id="ad-reward" step="0.01"></div>
-            <div class="input-group"><label>🎡 Çarx Qazancı (₼)</label><input type="number" id="spin-reward" step="0.01"></div>
-            <div class="input-group"><label>👥 Referal Qazancı (₼)</label><input type="number" id="ref-reward" step="0.01"></div>
-            <div class="input-group"><label>💰 Görəv Qazancı (₼)</label><input type="number" id="task-reward" step="0.01"></div>
-            <div class="input-group"><label>🔗 Görəv Linki</label><input type="text" id="task-link" placeholder="https://..."></div>
-            <div class="input-group"><label>💳 Min. Çıxarış (₼)</label><input type="number" id="min-draw"></div>
-            <div class="input-group"><label>🔑 Aktiv Promokod</label><input type="text" id="promo-code"></div>
-            <button class="btn-main" onclick="saveData()">AYARLARI YADDA SAXLA</button>
-        </div>
-    </div>
-
-    <div id="draws-p" class="page">
-        <div class="card">
+    <div id="p-draw" class="page">
+        <div class="admin-card">
             <h2><i class="fas fa-wallet"></i> Çıxarış Sorğuları</h2>
-            <table>
-                <thead><tr><th>Məlumat</th><th>Metod</th><th>Məbləğ</th><th>X</th></tr></thead>
-                <tbody id="payout-list"></tbody>
-            </table>
+            <div id="draw-list">Sorğu gözlənilir...</div>
         </div>
     </div>
 
-    <div id="users-p" class="page">
-        <div class="card">
-            <h2><i class="fas fa-users"></i> İstifadəçilər</h2>
-            <table>
-                <thead><tr><th>ID</th><th>Balans</th><th>Coin</th></tr></thead>
-                <tbody id="user-list"></tbody>
-            </table>
+    <div id="p-cmd" class="page">
+        <div class="admin-card">
+            <h2><i class="fas fa-bolt"></i> İstifadəçi İdarəsi</h2>
+            <input type="text" id="target-id" placeholder="İstifadəçi ID yazın" style="margin-bottom:10px;">
+            <button class="btn-main" style="background:var(--danger)" onclick="cmd('delete')">İstifadəçini Sil</button>
+            <button class="btn-main" style="background:#f59e0b; margin-top:8px;" onclick="cmd('reset')">Balansı Sıfırla</button>
+            <div style="margin-top:15px;">
+                <label style="font-size:12px; font-weight:bold;">Balans Artır (₼)</label>
+                <input type="number" id="plus-amt" placeholder="Məs: 1.50">
+                <button class="btn-main" onclick="cmd('add')">Məbləği Əlavə Et</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="p-users" class="page">
+        <div class="admin-card">
+            <h2><i class="fas fa-users"></i> İstifadəçi Siyahısı</h2>
+            <div id="full-user-list" style="max-height: 450px; overflow-y: auto;"></div>
+        </div>
+    </div>
+
+    <div id="p-set" class="page">
+        <div class="admin-card">
+            <h2><i class="fas fa-cog"></i> Qiymət və Linklər</h2>
+            
+            <div class="input-group">
+                <label>Tıklama Qazancı (0.00 ₼)</label>
+                <input type="number" id="set-click-rew" step="0.01" placeholder="0.01">
+                <button class="btn-main" onclick="saveSet('clickReward', 'set-click-rew')">DƏYİŞ</button>
+            </div>
+
+            <div class="input-group">
+                <label>Promo Kod Yarat (Ad / Məbləğ 0.00 ₼)</label>
+                <input type="text" id="promo-name" placeholder="Məs: YENI2026">
+                <input type="number" id="promo-val" step="0.01" placeholder="0.50">
+                <button class="btn-main" style="background:#8b5cf6" onclick="createPromo()">PROMO YARAT</button>
+            </div>
+
+            <div class="input-group">
+                <label>Günün Görəvi (Qiymət 0.00 ₼ / Link)</label>
+                <input type="number" id="set-task-rew" step="0.01" placeholder="0.10">
+                <input type="text" id="set-task-link" placeholder="https://link.com">
+                <button class="btn-main" onclick="saveTask()">GÖRƏVİ YENİLƏ</button>
+            </div>
+
+            <div class="input-group">
+                <label>Reklam Qazancı (0.00 ₼)</label>
+                <input type="number" id="set-ad-rew" step="0.01">
+                <button class="btn-main" onclick="saveSet('adReward', 'set-ad-rew')">DƏYİŞ</button>
+            </div>
+
+            <div class="input-group">
+                <label>Çarx Qazancı (0.00 ₼)</label>
+                <input type="number" id="set-spin-rew" step="0.01">
+                <button class="btn-main" onclick="saveSet('spinReward', 'set-spin-rew')">DƏYİŞ</button>
+            </div>
+
+            <div class="input-group">
+                <label>Referal Qazancı (0.00 ₼)</label>
+                <input type="number" id="set-ref-rew" step="0.01">
+                <button class="btn-main" onclick="saveSet('refReward', 'set-ref-rew')">DƏYİŞ</button>
+            </div>
+
+            <div class="input-group">
+                <label>Çıxarış Limiti (Min. 0.00 ₼)</label>
+                <input type="number" id="set-min-draw" step="0.50">
+                <button class="btn-main" onclick="saveSet('minWithdraw', 'set-min-draw')">DƏYİŞ</button>
+            </div>
         </div>
     </div>
 
     <nav class="nav-bar">
-        <div class="nav-link active" onclick="nav('stats-p', this)"><i class="fas fa-chart-bar"></i>Stat</div>
-        <div class="nav-link" onclick="nav('settings-p', this)"><i class="fas fa-tools"></i>Ayarlar</div>
-        <div class="nav-link" onclick="nav('draws-p', this)"><i class="fas fa-money-bill-wave"></i>Çıxarış</div>
-        <div class="nav-link" onclick="nav('users-p', this)"><i class="fas fa-user-friends"></i>User</div>
+        <div class="nav-item active" onclick="nav('p-stat', this)"><i class="fas fa-home"></i><span>Stat</span></div>
+        <div class="nav-item" onclick="nav('p-draw', this)"><i class="fas fa-wallet"></i><span>Çıxarış</span></div>
+        <div class="nav-item" onclick="nav('p-cmd', this)"><i class="fas fa-bolt"></i><span>Əmrlər</span></div>
+        <div class="nav-item" onclick="nav('p-users', this)"><i class="fas fa-users"></i><span>Siyahı</span></div>
+        <div class="nav-item" onclick="nav('p-set', this)"><i class="fas fa-cog"></i><span>Dəyiş</span></div>
     </nav>
 
-<script>
-    const firebaseConfig = {
-        apiKey: "AIzaSyAf3y4KIjlzQf6CY9yw8S00K6DStiPvNAI",
-        authDomain: "pulify-1b39b.firebaseapp.com",
-        projectId: "pulify-1b39b",
-        databaseURL: "https://pulify-1b39b-default-rtdb.firebaseio.com/",
-        storageBucket: "pulify-1b39b.firebasestorage.app",
-        messagingSenderId: "873330495196",
-        appId: "1:873330495196:web:165ec0858fa409a919ae19"
-    };
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.database();
-
-    function nav(id, el) {
-        document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page'));
-        document.getElementById(id).classList.add('active-page');
-        document.querySelectorAll('.nav-link').forEach(n => n.classList.remove('active'));
-        el.classList.add('active');
-    }
-
-    // VERİLƏRİ OXU (Undefined qarşısını almaq üçün || "" əlavə edildi)
-    db.ref('settings').on('value', s => {
-        const d = s.val() || {};
-        document.getElementById('ad-reward').value = d.adReward || 0;
-        document.getElementById('spin-reward').value = d.spinReward || 0;
-        document.getElementById('ref-reward').value = d.refReward || 0;
-        document.getElementById('task-reward').value = d.taskReward || 0;
-        document.getElementById('task-link').value = d.taskLink || "";
-        document.getElementById('min-draw').value = d.minWithdraw || 0;
-        document.getElementById('promo-code').value = d.promoCode || "";
-    });
-
-    db.ref('notifications').on('value', s => {
-        const d = s.val() || {};
-        document.getElementById('not-title').value = d.title || "";
-        document.getElementById('not-body').value = d.body || "";
-    });
-
-    // STATİSTİKA
-    db.ref('stats/ads').on('value', s => {
-        const d = s.val() || { count: 0, revenue: 0, viewers: {} };
-        document.getElementById('total-ads').innerText = d.count || 0;
-        document.getElementById('total-payouts').innerText = (d.revenue || 0).toFixed(2) + " ₼";
-        document.getElementById('active-viewers').innerText = d.viewers ? Object.keys(d.viewers).length : 0;
-    });
-
-    // ÇIXARIŞLAR
-    db.ref('payouts').on('value', s => {
-        const list = document.getElementById('payout-list');
-        list.innerHTML = "";
-        s.forEach(item => {
-            const p = item.val();
-            list.innerHTML += `<tr>
-                <td><b>${p.num || 'Adsız'}</b><br><small>${p.id || ''}</small></td>
-                <td><span style="background:#e3f2fd; padding:3px 7px; border-radius:5px; font-size:10px;">${(p.method || 'M10').toUpperCase()}</span></td>
-                <td style="color:red; font-weight:bold;">${p.amt || 0}₼</td>
-                <td><i class="fas fa-trash" onclick="del('payouts/${item.key}')" style="color:#ddd"></i></td>
-            </tr>`;
-        });
-    });
-
-    // İSTİFADƏÇİLƏR
-    db.ref('users').on('value', s => {
-        const list = document.getElementById('user-list');
-        list.innerHTML = "";
-        s.forEach(u => {
-            const val = u.val();
-            list.innerHTML += `<tr>
-                <td>ID:${u.key.substring(0,6)}</td>
-                <td style="color:green; font-weight:bold;">${(val.balance || 0).toFixed(2)}₼</td>
-                <td>${val.coins || 0}</td>
-            </tr>`;
-        });
-    });
-
-    function saveData() {
-        const settings = {
-            adReward: parseFloat(document.getElementById('ad-reward').value) || 0,
-            spinReward: parseFloat(document.getElementById('spin-reward').value) || 0,
-            refReward: parseFloat(document.getElementById('ref-reward').value) || 0,
-            taskReward: parseFloat(document.getElementById('task-reward').value) || 0,
-            taskLink: document.getElementById('task-link').value || "",
-            minWithdraw: parseFloat(document.getElementById('min-draw').value) || 0,
-            promoCode: document.getElementById('promo-code').value || ""
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyAf3y4KIjlzQf6CY9yw8S00K6DStiPvNAI",
+            authDomain: "pulify-1b39b.firebaseapp.com",
+            projectId: "pulify-1b39b",
+            databaseURL: "https://pulify-1b39b-default-rtdb.firebaseio.com/",
+            storageBucket: "pulify-1b39b.firebasestorage.app",
+            messagingSenderId: "873330495196",
+            appId: "1:873330495196:web:165ec0858fa409a919ae19"
         };
-        const nots = {
-            title: document.getElementById('not-title').value || "",
-            body: document.getElementById('not-body').value || ""
-        };
-        db.ref('settings').set(settings);
-        db.ref('notifications').set(nots);
-        alert("Baza yeniləndi! Artıq 'undefined' görünməyəcək. ✅");
-    }
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
 
-    function del(path) { if(confirm("Silinsin?")) db.ref(path).remove(); }
-</script>
+        function nav(id, el) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page'));
+            document.getElementById(id).classList.add('active-page');
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            el.classList.add('active');
+        }
+
+        function postAnnouncement() {
+            let msg = document.getElementById('live-ann-text').value;
+            if(!msg) return alert("Mesaj boş ola bilməz!");
+            db.ref('settings/announcement').set(msg).then(() => {
+                alert("Məlumat paylaşıldı!");
+                document.getElementById('live-ann-text').value = "";
+            });
+        }
+
+        function load() {
+            // İstifadəçi Siyahısı (ID + Real Ad/Username)
+            db.ref('users').on('value', s => {
+                const data = s.val() || {};
+                let count = 0, balSum = 0, html = "";
+                for(let id in data) {
+                    count++;
+                    balSum += (data[id].balance || 0);
+                    let tg = data[id].tgName ? "@" + data[id].tgName : "Yoxdur";
+                    let real = data[id].realName || "Adsız";
+                    html += `<div style="padding:12px; border-bottom:1px solid #f0fdf4;">
+                                <b style="color:var(--primary)">${real} (${tg})</b><br>
+                                <small style="color:#666">ID: ${id} | Balans: ${(data[id].balance || 0).toFixed(2)} ₼</small>
+                             </div>`;
+                }
+                document.getElementById('s-users').innerText = count;
+                document.getElementById('s-bal').innerText = balSum.toFixed(2) + " ₼";
+                document.getElementById('full-user-list').innerHTML = html;
+            });
+
+            // Çıxarış Sorğuları (✅ Təsdiq sistemi)
+            db.ref('payouts').on('value', s => {
+                const pays = s.val() || {};
+                let html = "";
+                for(let key in pays) {
+                    html += `<div class="pay-card">
+                        <b>ID: ${pays[key].userId}</b><br>
+                        Məbləğ: ${pays[key].amount.toFixed(2)} ₼<br>
+                        Kart: ${pays[key].number}
+                        <div class="pay-btns">
+                            <button class="btn-ok" onclick="approvePay('${key}', '${pays[key].userId}', ${pays[key].amount})">✅ Təsdiqlə</button>
+                            <button class="btn-no" onclick="db.ref('payouts/${key}').remove()">❌ Ləğv et</button>
+                        </div>
+                    </div>`;
+                }
+                document.getElementById('draw-list').innerHTML = html || "Sorğu yoxdur.";
+            });
+        }
+
+        // Təsdiqlə düyməsi - Həm sorğunu silir, həm balansdan çıxır
+        function approvePay(key, uid, amt) {
+            db.ref('users/' + uid + '/balance').transaction(b => (b || 0) - amt).then(() => {
+                db.ref('payouts/' + key).remove();
+                alert("Ödəniş təsdiqləndi və balansdan çıxıldı!");
+            });
+        }
+
+        function createPromo() {
+            let name = document.getElementById('promo-name').value;
+            let val = parseFloat(document.getElementById('promo-val').value);
+            if(name && val) {
+                db.ref('promos/' + name).set({amount: val, active: true}).then(() => alert("Promo Yarandı!"));
+            }
+        }
+
+        function saveTask() {
+            let rew = parseFloat(document.getElementById('set-task-rew').value);
+            let link = document.getElementById('set-task-link').value;
+            db.ref('settings').update({taskReward: rew, taskLink: link}).then(() => alert("Yeniləndi!"));
+        }
+
+        function cmd(type) {
+            let id = document.getElementById('target-id').value;
+            if(!id) return alert("ID daxil edin!");
+            if(type === 'delete') db.ref('users/'+id).remove();
+            if(type === 'reset') db.ref('users/'+id).update({balance: 0});
+            if(type === 'add') {
+                let amt = parseFloat(document.getElementById('plus-amt').value);
+                db.ref('users/'+id+'/balance').transaction(b => (b || 0) + amt);
+            }
+            alert("Uğurlu!");
+        }
+
+        function saveSet(path, inputId) {
+            let val = parseFloat(document.getElementById(inputId).value);
+            if(!isNaN(val)) db.ref('settings/'+path).set(val).then(()=>alert("Yeniləndi!"));
+        }
+
+        window.onload = load;
+    </script>
 </body>
 </html>
