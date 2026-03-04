@@ -171,10 +171,20 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
+        // YADDAŞDAN MƏLUMATLARIN YÜKLƏNMƏSİ
         let balance = parseFloat(localStorage.getItem('balance')) || 0;
         let coins = parseInt(localStorage.getItem('coins')) || 0;
+        let clickLimit = parseInt(localStorage.getItem('clickLimit')) || 1000;
         let refCount = parseInt(localStorage.getItem('refCount')) || 0;
-        let clickLimit = 1000;
+        let lastLimitReset = localStorage.getItem('lastLimitReset') || Date.now();
+
+        // GÜNLÜK LİMİTİ YENİLƏMƏK (Hər 24 saatdan bir 1000-ə qayıdır)
+        if (Date.now() - lastLimitReset > 86400000) {
+            clickLimit = 1000;
+            localStorage.setItem('clickLimit', 1000);
+            localStorage.setItem('lastLimitReset', Date.now());
+        }
+
         let adReward = 0.03;
         let taskReward = 0.05;
         let spinReward = 0.03;
@@ -234,13 +244,16 @@
             let dBtn = document.getElementById('draw-btn');
             dBtn.disabled = (balance < minWithdraw);
             dBtn.style.background = (balance >= minWithdraw) ? "var(--green)" : "#ccc";
+            
+            // YADDAŞA YAZMA
             localStorage.setItem('balance', balance);
             localStorage.setItem('coins', coins);
+            localStorage.setItem('clickLimit', clickLimit);
             localStorage.setItem('refCount', refCount);
+            
             checkSpinLimit(); checkTaskLimit();
         }
 
-        // YALNIZ REKLAM FUNKSİYASI MONETAG-A UYĞUNLAŞDIRILDI
         function watchAd() {
             if (typeof show_10678808 === 'function') {
                 show_10678808().then(() => {
@@ -248,11 +261,12 @@
                     update(); 
                     alert("Təbrik! Balansınıza +" + adReward + " ₼ əlavə olundu.");
                 }).catch(() => {
-                    alert("Reklam hələ hazır deyil, zəhmət olmasa bir az sonra yoxlayın.");
+                    alert("Reklam yüklənir... Zəhmət olmasa ekrandakı reklamlara toxunun.");
+                    // Alternativ artım (Sistem tam açılana qədər istifadəçini küsdürməmək üçün)
+                    balance += adReward; update();
                 });
             } else {
                 alert("Reklam yüklənir... Zəhmət olmasa ekrandakı reklamlara toxunaraq dəstək olun.");
-                // Alternativ olaraq birbaşa artım (Test üçün və ya MultiTag aktivdirsə):
                 balance += adReward; update();
             }
         }
@@ -262,7 +276,7 @@
                 coins++; clickLimit--; update();
                 let d = document.getElementById('main-diamond');
                 d.style.transform = "scale(0.9)"; setTimeout(() => d.style.transform = "scale(1)", 80);
-            } else alert("Limit doldu!");
+            } else alert("Limit doldu! Sabah yenidən cəhd edin.");
         }
 
         function runSpin() {
