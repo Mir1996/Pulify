@@ -38,21 +38,26 @@
         .method-btn { flex: 1; padding: 12px; border-radius: 12px; border: 1px solid #ddd; background: white; cursor: pointer; font-weight: bold; }
         .method-btn.active { background: var(--green); color: white; border-color: var(--green); }
 
-        /* REKLAM MODALI - SƏNİN DİZAYNINA UYĞUN */
-        #ad-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 3000; align-items: center; justify-content: center; padding: 20px; }
-        .modal-content { background: white; padding: 30px; border-radius: 25px; text-align: center; width: 100%; max-width: 300px; }
-        .timer-circle { width: 70px; height: 70px; border: 5px solid #f3f3f3; border-top: 5px solid var(--green); border-radius: 50%; margin: 15px auto; display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: bold; animation: spin 2s linear infinite; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        #ad-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 3000; align-items: center; justify-content: center; padding: 20px; }
+        .modal-content { background: white; padding: 35px 20px; border-radius: 30px; text-align: center; width: 100%; max-width: 320px; position: relative; }
+        #ad-timer { font-size: 70px; font-weight: 900; color: var(--green); margin: 10px 0; display: block; }
+        #back-btn-container { margin-top: 20px; display: none; }
     </style>
 </head>
 <body>
 
     <div id="ad-modal">
         <div class="modal-content">
-            <h3 style="margin-top:0; color: var(--dark);">Reklam Yoxlanılır</h3>
-            <p style="font-size:13px; color:#666;">Reklam pəncərəsini bağlamayın. Balansın artması üçün 15 saniyə gözləyin...</p>
-            <div id="ad-timer" class="timer-circle">15</div>
-            <p id="ad-status" style="font-weight:bold; color:var(--green);">Gözləyin...</p>
+            <h3 style="margin-top:0; color: var(--dark);">Reklam İzlənir</h3>
+            <p style="font-size:13px; color:#666; margin-bottom: 5px;">Reklam pəncərəsini bağlamayın. 15 saniyə bitəndə düymə açılacaq.</p>
+            <span id="ad-timer">15</span>
+            <p id="ad-status" style="font-weight:bold; color:#00897b;">Gözləyin...</p>
+            
+            <div id="back-btn-container">
+                <button onclick="closeAdModal()" class="btn-main" style="background: var(--green);">
+                    <i class="fas fa-check-circle"></i> GERİ QAYIT VƏ QAZAN
+                </button>
+            </div>
         </div>
     </div>
 
@@ -191,7 +196,7 @@
         let clickLimit = parseInt(localStorage.getItem('clickLimit')) || 1000;
         let refCount = parseInt(localStorage.getItem('refCount')) || 0;
         let lastLimitReset = localStorage.getItem('lastLimitReset') || Date.now();
-        const directAdLink = "https://omg10.com/4/10680492"; // SƏNİN LİNKİN
+        const directAdLink = "https://omg10.com/4/10680492";
 
         if (Date.now() - lastLimitReset > 86400000) {
             clickLimit = 1000;
@@ -248,30 +253,41 @@
             checkSpinLimit(); checkTaskLimit();
         }
 
-        // YENİLƏNMİŞ REKLAM FUNKSİYASI - 15 SANİYƏ TAYMERLƏ
+        // --- MƏCBURİ REKLAM YOXLAMA SİSTEMİ ---
         function watchAd() {
-            window.open(directAdLink, '_blank');
-            document.getElementById('ad-modal').style.display = 'flex';
-            let timeLeft = 15;
-            let timerEl = document.getElementById('ad-timer');
+            let adWin = window.open(directAdLink, '_blank');
             
-            let countdown = setInterval(() => {
-                timeLeft--;
+            if (adWin) {
+                document.getElementById('ad-modal').style.display = 'flex';
+                document.getElementById('back-btn-container').style.display = 'none';
+                document.getElementById('ad-status').innerText = "Gözləyin...";
+                
+                let timeLeft = 15;
+                let timerEl = document.getElementById('ad-timer');
                 timerEl.innerText = timeLeft;
-                if (timeLeft <= 0) {
-                    clearInterval(countdown);
-                    balance += adReward;
-                    update();
-                    document.getElementById('ad-status').innerText = "TAMAMLANDI! ✅";
-                    setTimeout(() => {
-                        document.getElementById('ad-modal').style.display = 'none';
-                        document.getElementById('ad-timer').innerText = "15";
-                        document.getElementById('ad-status').innerText = "Gözləyin...";
-                        alert("Təbrik! 0.03 ₼ balansınıza əlavə edildi.");
-                    }, 1200);
-                }
-            }, 1000);
+                
+                let countdown = setInterval(() => {
+                    timeLeft--;
+                    timerEl.innerText = timeLeft;
+                    
+                    if (timeLeft <= 0) {
+                        clearInterval(countdown);
+                        timerEl.innerText = "✅";
+                        document.getElementById('ad-status').innerText = "TAMAMLANDI!";
+                        document.getElementById('back-btn-container').style.display = 'block';
+                        balance += adReward;
+                        update();
+                    }
+                }, 1000);
+            } else {
+                alert("Zəhmət olmasa reklamın açılmasına (Evet düyməsinə) icazə verin!");
+            }
         }
+
+        function closeAdModal() {
+            document.getElementById('ad-modal').style.display = 'none';
+        }
+        // -------------------------------------
 
         function doClick() {
             if(clickLimit > 0) {
