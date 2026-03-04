@@ -37,9 +37,24 @@
         .method-tabs { display: flex; gap: 10px; margin-bottom: 20px; }
         .method-btn { flex: 1; padding: 12px; border-radius: 12px; border: 1px solid #ddd; background: white; cursor: pointer; font-weight: bold; }
         .method-btn.active { background: var(--green); color: white; border-color: var(--green); }
+
+        /* REKLAM MODALI - SƏNİN DİZAYNINA UYĞUN */
+        #ad-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 3000; align-items: center; justify-content: center; padding: 20px; }
+        .modal-content { background: white; padding: 30px; border-radius: 25px; text-align: center; width: 100%; max-width: 300px; }
+        .timer-circle { width: 70px; height: 70px; border: 5px solid #f3f3f3; border-top: 5px solid var(--green); border-radius: 50%; margin: 15px auto; display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: bold; animation: spin 2s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
+
+    <div id="ad-modal">
+        <div class="modal-content">
+            <h3 style="margin-top:0; color: var(--dark);">Reklam Yoxlanılır</h3>
+            <p style="font-size:13px; color:#666;">Reklam pəncərəsini bağlamayın. Balansın artması üçün 15 saniyə gözləyin...</p>
+            <div id="ad-timer" class="timer-circle">15</div>
+            <p id="ad-status" style="font-weight:bold; color:var(--green);">Gözləyin...</p>
+        </div>
+    </div>
 
     <div class="app-header">
         <div style="font-weight: 900; color: var(--green); font-size: 22px;">PULIFY</div>
@@ -171,14 +186,13 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
-        // YADDAŞDAN MƏLUMATLARIN YÜKLƏNMƏSİ
         let balance = parseFloat(localStorage.getItem('balance')) || 0;
         let coins = parseInt(localStorage.getItem('coins')) || 0;
         let clickLimit = parseInt(localStorage.getItem('clickLimit')) || 1000;
         let refCount = parseInt(localStorage.getItem('refCount')) || 0;
         let lastLimitReset = localStorage.getItem('lastLimitReset') || Date.now();
+        const directAdLink = "https://omg10.com/4/10680492"; // SƏNİN LİNKİN
 
-        // GÜNLÜK LİMİTİ YENİLƏMƏK (Hər 24 saatdan bir 1000-ə qayıdır)
         if (Date.now() - lastLimitReset > 86400000) {
             clickLimit = 1000;
             localStorage.setItem('clickLimit', 1000);
@@ -215,25 +229,6 @@
             }
         });
 
-        function startTimer(lastTime, duration, btnId, msgId, timerId) {
-            const btn = document.getElementById(btnId);
-            const msgBox = document.getElementById(msgId);
-            const timerText = document.getElementById(timerId);
-            const interval = setInterval(() => {
-                let timeLeft = duration - (Date.now() - lastTime);
-                if (timeLeft <= 0) {
-                    btn.disabled = false; btn.style.background = "var(--green)";
-                    msgBox.style.display = "none"; clearInterval(interval);
-                } else {
-                    btn.disabled = true; btn.style.background = "#ccc"; msgBox.style.display = "block";
-                    let h = Math.floor(timeLeft / 3600000);
-                    let m = Math.floor((timeLeft % 3600000) / 60000);
-                    let s = Math.floor((timeLeft % 60000) / 1000);
-                    timerText.innerText = (h<10?'0'+h:h)+":"+(m<10?'0'+m:m)+":"+(s<10?'0'+s:s);
-                }
-            }, 1000);
-        }
-
         function update() {
             document.getElementById('top-bal').innerText = balance.toFixed(2);
             document.getElementById('m-bal').innerText = balance.toFixed(2);
@@ -245,7 +240,6 @@
             dBtn.disabled = (balance < minWithdraw);
             dBtn.style.background = (balance >= minWithdraw) ? "var(--green)" : "#ccc";
             
-            // YADDAŞA YAZMA
             localStorage.setItem('balance', balance);
             localStorage.setItem('coins', coins);
             localStorage.setItem('clickLimit', clickLimit);
@@ -254,21 +248,29 @@
             checkSpinLimit(); checkTaskLimit();
         }
 
+        // YENİLƏNMİŞ REKLAM FUNKSİYASI - 15 SANİYƏ TAYMERLƏ
         function watchAd() {
-            if (typeof show_10678808 === 'function') {
-                show_10678808().then(() => {
-                    balance += adReward; 
-                    update(); 
-                    alert("Təbrik! Balansınıza +" + adReward + " ₼ əlavə olundu.");
-                }).catch(() => {
-                    alert("Reklam yüklənir... Zəhmət olmasa ekrandakı reklamlara toxunun.");
-                    // Alternativ artım (Sistem tam açılana qədər istifadəçini küsdürməmək üçün)
-                    balance += adReward; update();
-                });
-            } else {
-                alert("Reklam yüklənir... Zəhmət olmasa ekrandakı reklamlara toxunaraq dəstək olun.");
-                balance += adReward; update();
-            }
+            window.open(directAdLink, '_blank');
+            document.getElementById('ad-modal').style.display = 'flex';
+            let timeLeft = 15;
+            let timerEl = document.getElementById('ad-timer');
+            
+            let countdown = setInterval(() => {
+                timeLeft--;
+                timerEl.innerText = timeLeft;
+                if (timeLeft <= 0) {
+                    clearInterval(countdown);
+                    balance += adReward;
+                    update();
+                    document.getElementById('ad-status').innerText = "TAMAMLANDI! ✅";
+                    setTimeout(() => {
+                        document.getElementById('ad-modal').style.display = 'none';
+                        document.getElementById('ad-timer').innerText = "15";
+                        document.getElementById('ad-status').innerText = "Gözləyin...";
+                        alert("Təbrik! 0.03 ₼ balansınıza əlavə edildi.");
+                    }, 1200);
+                }
+            }, 1000);
         }
 
         function doClick() {
@@ -316,14 +318,33 @@
             document.getElementById('card-tab').classList.toggle('active', m==='card');
         }
 
+        function startTimer(lastTime, duration, btnId, msgId, timerId) {
+            const btn = document.getElementById(btnId);
+            const msgBox = document.getElementById(msgId);
+            const timerText = document.getElementById(timerId);
+            const interval = setInterval(() => {
+                let timeLeft = duration - (Date.now() - lastTime);
+                if (timeLeft <= 0) {
+                    btn.disabled = false; btn.style.background = "var(--green)";
+                    msgBox.style.display = "none"; clearInterval(interval);
+                } else {
+                    btn.disabled = true; btn.style.background = "#ccc"; msgBox.style.display = "block";
+                    let h = Math.floor(timeLeft / 3600000);
+                    let m = Math.floor((timeLeft % 3600000) / 60000);
+                    let s = Math.floor((timeLeft % 60000) / 1000);
+                    timerText.innerText = (h<10?'0'+h:h)+":"+(m<10?'0'+m:m)+":"+(s<10?'0'+s:s);
+                }
+            }, 1000);
+        }
+
         function checkSpinLimit() {
             if (Date.now() - lastSpin < 86400000) startTimer(lastSpin, 86400000, 'spin-btn', 'spin-timer', 'time-left');
-            else { document.getElementById('spin-btn').disabled = false; document.getElementById('spin-timer').style.display = 'none'; }
+            else { if(document.getElementById('spin-btn')) document.getElementById('spin-btn').disabled = false; document.getElementById('spin-timer').style.display = 'none'; }
         }
 
         function checkTaskLimit() {
             if (Date.now() - lastTask < 86400000) startTimer(lastTask, 86400000, 'task-btn', 'task-timer-msg', 'task-time-left');
-            else { document.getElementById('task-btn').disabled = false; document.getElementById('task-timer-msg').style.display = 'none'; }
+            else { if(document.getElementById('task-btn')) document.getElementById('task-btn').disabled = false; document.getElementById('task-timer-msg').style.display = 'none'; }
         }
 
         function convertCoins() {
